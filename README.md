@@ -25,7 +25,7 @@ Mountix adalah platform digital berbasis web yang dirancang untuk mempermudah pr
 
 1. **Clone Repositori:**
    ```bash
-   git clone https://github.com/username/mountix.git
+   git clone https://github.com/Malfrmnsyhh/mountix.git
    cd mountix
    ```
 
@@ -58,22 +58,6 @@ Mountix adalah platform digital berbasis web yang dirancang untuk mempermudah pr
    npm run build
    php artisan serve
    ```
-
-## 🌐 Panduan Deployment (Railway)
-
-Untuk deploy ke Railway, ikuti urutan berikut:
-
-1. **Push Code:** Push repositori Anda ke GitHub.
-2. **New Project:** Di Railway dashboard, pilih "Deploy from GitHub repo".
-3. **Variables:** **PENTING!** Sebelum build selesai, masuk ke tab "Variables" dan tambahkan:
-   - `APP_KEY` (Generate lokal lalu copy)
-   - `JWT_SECRET` (Generate lokal lalu copy)
-   - `APP_ENV=production`
-   - `APP_DEBUG=false`
-   - `FILESYSTEM_DISK=public`
-   - `NIXPACKS_PHP_ROOT_DIR=public`
-4. **Database:** Jika menggunakan MySQL di Railway, tambahkan variabel `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` sesuai data dari plugin MySQL Railway.
-5. **Post-Build Command:** Pastikan menjalankan `php artisan migrate --force` dan `php artisan storage:link` di server.
 
 ## 🔑 Akun Uji Coba (Seeder)
 
