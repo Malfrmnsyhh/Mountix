@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class BookingMember extends Model{
-  protected $fillable = ['booking_id', 'nama_lengkap', 'nik', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'ktp_path', 'surat_sehat_path'];
+  protected $fillable = ['booking_id', 'nama_lengkap', 'nik', 'tanggal_lahir', 'jenis_kelamin', 'alamat', 'ktp_path', 'surat_sehat_path', 'kontak_darurat_nama', 'kontak_darurat_no_hp', 'kontak_darurat_hubungan', 'is_leader'];
 
   public function booking() {
     return $this->belongsTo(Booking::class);

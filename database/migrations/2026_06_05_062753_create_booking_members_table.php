@@ -16,6 +16,9 @@ return new class extends Migration {
             $table->text('alamat');
             $table->string('ktp_path');
             $table->string('surat_sehat_path');
+            $table->string('kontak_darurat_nama')->nullable();
+            $table->string('kontak_darurat_no_hp')->nullable();
+            $table->string('kontak_darurat_hubungan')->nullable();
             $table->boolean('is_leader')->default(false);
             $table->timestamps();
         });

@@ -16,7 +16,9 @@ return new class extends Migration {
       $table->integer('jumlah_orang');
       $table->integer('total_bayar');
       $table->enum('status', ['draft', 'pending_upload', 'waiting_verification', 'verified', 'ticket_issued', 'completed', 'cancelled', 'rejected'])->default('draft');
-      $table->text('cacatam_admin')->nullable();
+      $table->text('catatan_admin')->nullable();
+      $table->timestamp('check_in_at')->nullable();
+      $table->timestamp('check_out_at')->nullable();
       $table->timestamps();
     });
   }

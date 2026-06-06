@@ -10,9 +10,10 @@ return new class extends Migration {
       $table->id();
       $table->string('nama');
       $table->string('lokasi');
-      $table->string('ketinggian');
+      $table->integer('ketinggian');
       $table->string('syarat_pendakian');
-      $table->string('status_buka')->default(true);
+      $table->string('deskripsi');
+      $table->boolean('status_buka')->default(true);
       $table->string('foto_cover')->nullable();
       $table->timestamps();
     });

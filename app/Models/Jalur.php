@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Jalur extends Model
 {
-  protected $fillable = ['gunung_id', 'nama_jalur', 'harga_per_orang', 'kuota_default', 'estimasi_jam'];
+  protected $fillable = ['gunung_id', 'nama_jalur', 'harga_per_orang', 'deskripsi', 'kuota_default', 'estimasi_jam'];
 
   public function gunung() {
     return $this->belongsTo(Gunung::class);
