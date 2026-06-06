@@ -13,7 +13,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
   return response()->json(['message' => 'Email sukses diverifikasi.']);
 })->middleware(['auth:api', 'signed'])->name('verification.verify');
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->name('api.v1.')->group(function () {
   // Auth Endpoints
   Route::group(['prefix' => 'auth'], function () {
     Route::post('register', [AuthController::class, 'register']);
