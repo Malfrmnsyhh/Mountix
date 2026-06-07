@@ -22,7 +22,29 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Protected Routes (Simulated with simple guest check for now, 
+// Session Bridge for Admin (JWT -> Session)
+Route::get('/auth/session-bridge', function (Illuminate\Http\Request $request) {
+    $token = $request->query('token');
+    if (!$token) return redirect('/login');
+
+    try {
+        // Manually set the token for the API guard
+        auth('api')->setToken($token);
+        $user = auth('api')->authenticate();
+        
+        if ($user && $user->role === 'admin') {
+            auth('web')->login($user);
+            return redirect('/admin');
+        }
+    } catch (\Exception $e) {
+        // Token invalid
+    }
+    
+    return redirect('/');
+});
+
+// Protected Routes
+ (Simulated with simple guest check for now, 
 // as real auth will be handled via JWT in JS)
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');

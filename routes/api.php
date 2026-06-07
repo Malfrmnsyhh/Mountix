@@ -15,7 +15,7 @@ Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $requ
 
 Route::prefix('v1')->name('api.v1.')->group(function () {
   // Auth Endpoints
-  Route::group(['prefix' => 'auth'], function () {
+  Route::group(['prefix' => 'auth', 'middleware' => ['web']], function () {
     Route::post('register', [AuthController::class, 'register']);
     Route::post('login', [AuthController::class, 'login']);
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);

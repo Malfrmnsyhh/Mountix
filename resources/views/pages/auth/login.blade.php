@@ -72,7 +72,12 @@
             window.showAlert('Login berhasil! Mengalihkan...', 'success');
             
             setTimeout(() => {
-                window.location.href = '{{ route("home") }}';
+                // If user is admin, redirect to bridge to sync session
+                if (data.user && data.user.role === 'admin') {
+                    window.location.href = `/auth/session-bridge?token=${data.access_token}`;
+                } else {
+                    window.location.href = '{{ route("home") }}';
+                }
             }, 1000);
         } catch (error) {
             console.error(error);
