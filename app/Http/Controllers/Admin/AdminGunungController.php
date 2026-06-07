@@ -86,12 +86,16 @@ class AdminGunungController extends Controller
 
     public function destroy(Gunung $gunung)
     {
-        if ($gunung->foto_cover) {
-            Storage::disk('public')->delete($gunung->foto_cover);
-        }
-        
-        $gunung->delete();
+        try {
+            if ($gunung->foto_cover && !filter_var($gunung->foto_cover, FILTER_VALIDATE_URL)) {
+                Storage::disk('public')->delete($gunung->foto_cover);
+            }
+            
+            $gunung->delete();
 
-        return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil dihapus.');
+            return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: ' . $e->getMessage());
+        }
     }
 }
