@@ -11,7 +11,7 @@ return new class extends Migration {
       $table->string('nama');
       $table->string('lokasi');
       $table->integer('ketinggian');
-      $table->string('syarat_pendakian');
+      $table->text('syarat_pendakian');
       $table->string('deskripsi');
       $table->boolean('status_buka')->default(true);
       $table->string('foto_cover')->nullable();
