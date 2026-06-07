@@ -20,6 +20,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/forgot-password', [AuthController::class, 'forgotForm'])->name('password.request');
 });
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 // Protected Routes (Simulated with simple guest check for now, 
 // as real auth will be handled via JWT in JS)
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -33,3 +35,17 @@ Route::get('/payment/{booking_id}', [PaymentController::class, 'create'])->name(
 Route::get('/payment/{booking_id}/success', [PaymentController::class, 'success'])->name('payment.success');
 
 Route::get('/eticket/{booking_id}', [ETicketController::class, 'show'])->name('eticket.show');
+
+// Admin Routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+    
+    Route::resource('gunung', \App\Http\Controllers\Admin\AdminGunungController::class);
+    Route::resource('jalur', \App\Http\Controllers\Admin\AdminJalurController::class);
+    
+    Route::resource('booking', \App\Http\Controllers\Admin\AdminBookingController::class)->only(['index', 'show', 'update']);
+    Route::resource('payment', \App\Http\Controllers\Admin\AdminPaymentController::class)->only(['index', 'show']);
+    Route::post('payment/{payment}/verify', [\App\Http\Controllers\Admin\AdminPaymentController::class, 'verify'])->name('payment.verify');
+    Route::resource('eticket', \App\Http\Controllers\Admin\AdminETicketController::class)->only(['index', 'show']);
+    Route::resource('users', \App\Http\Controllers\Admin\AdminUserController::class)->only(['index', 'show']);
+});
