@@ -65,6 +65,13 @@
             </li>
 
             <li>
+                <a href="{{ route('admin.payment-method.index') }}" class="flex items-center p-3 rounded-xl {{ request()->routeIs('admin.payment-method.*') ? 'bg-primary text-white' : 'text-neutral-dark hover:bg-neutral-light' }} transition-all group">
+                    <i data-lucide="settings-2" class="w-5 h-5 {{ request()->routeIs('admin.payment-method.*') ? 'text-white' : 'text-neutral-dark/60 group-hover:text-primary' }}"></i>
+                    <span class="ml-3">Metode Bayar</span>
+                </a>
+            </li>
+
+            <li>
                 <a href="{{ route('admin.users.index') }}" class="flex items-center p-3 rounded-xl {{ request()->routeIs('admin.users.*') ? 'bg-primary text-white' : 'text-neutral-dark hover:bg-neutral-light' }} transition-all group">
                     <i data-lucide="users" class="w-5 h-5 {{ request()->routeIs('admin.users.*') ? 'text-white' : 'text-neutral-dark/60 group-hover:text-primary' }}"></i>
                     <span class="ml-3">Users</span>

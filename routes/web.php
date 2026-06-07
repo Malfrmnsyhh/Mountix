@@ -64,6 +64,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     
     Route::resource('gunung', \App\Http\Controllers\Admin\AdminGunungController::class);
     Route::resource('jalur', \App\Http\Controllers\Admin\AdminJalurController::class);
+    Route::resource('payment-method', \App\Http\Controllers\Admin\AdminPaymentMethodController::class);
     
     Route::resource('booking', \App\Http\Controllers\Admin\AdminBookingController::class)->only(['index', 'show', 'update']);
     Route::resource('payment', \App\Http\Controllers\Admin\AdminPaymentController::class)->only(['index', 'show']);

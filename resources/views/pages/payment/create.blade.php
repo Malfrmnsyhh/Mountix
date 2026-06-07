@@ -35,46 +35,59 @@
                     <i data-lucide="credit-card" class="w-6 h-6 mr-3"></i> Metode Pembayaran
                 </h2>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Bank Transfer -->
-                    <div class="p-6 border-2 border-primary rounded-2xl relative bg-primary/5">
-                        <div class="absolute top-4 right-4 text-primary">
-                            <i data-lucide="check-circle-2" class="w-6 h-6"></i>
+                <div class="space-y-8">
+                    <!-- Bank Transfers -->
+                    @if($paymentMethods->where('type', 'bank')->isNotEmpty())
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest text-neutral-dark/40 mb-4">Transfer Bank</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                @foreach($paymentMethods->where('type', 'bank') as $bank)
+                                    <div class="p-6 border-2 border-neutral-light rounded-2xl bg-neutral-light/5 hover:border-primary/20 transition-all group">
+                                        <div class="flex justify-between items-start mb-4">
+                                            <h4 class="font-bold text-neutral-dark">{{ $bank->name }}</h4>
+                                            <i data-lucide="building-2" class="w-5 h-5 text-neutral-dark/20 group-hover:text-primary transition-colors"></i>
+                                        </div>
+                                        <div class="bg-white p-4 rounded-xl space-y-2 border border-neutral-light">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">No. Rekening</span>
+                                                <span class="text-sm font-black text-primary tracking-wider">{{ $bank->account_number }}</span>
+                                            </div>
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">Atas Nama</span>
+                                                <span class="text-sm font-bold text-neutral-dark uppercase">{{ $bank->account_name }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
-                        <h4 class="font-bold text-neutral-dark mb-2">Transfer Bank (Manual)</h4>
-                        <p class="text-xs text-neutral-dark/60 mb-4">Silakan transfer ke rekening resmi kami:</p>
-                        <div class="bg-white p-4 rounded-xl space-y-3 border border-primary/20">
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">Bank</span>
-                                <span class="text-sm font-bold text-neutral-dark">BCA</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">No. Rekening</span>
-                                <span class="text-sm font-black text-primary tracking-wider">829-0123-456</span>
-                            </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">Atas Nama</span>
-                                <span class="text-sm font-bold text-neutral-dark uppercase">SANG SURYA</span>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    @endif
+
                     <!-- QRIS -->
-                    <div class="p-6 border-2 border-neutral-light rounded-2xl bg-neutral-light/10">
-                        <h4 class="font-bold text-neutral-dark mb-2">QRIS (All E-Wallet)</h4>
-                        <p class="text-[10px] text-neutral-dark/60 mb-4">Scan kode QR di bawah menggunakan aplikasi pembayaran Anda.</p>
-                        <div class="aspect-square bg-white rounded-xl flex flex-col items-center justify-center border border-neutral-light p-4">
-                            <!-- Placeholder QRIS -->
-                            <div class="w-full h-full bg-neutral-light flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-dark/10 overflow-hidden relative group">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Placeholder" class="w-full h-full object-contain p-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 group-hover:bg-transparent transition-all">
-                                    <i data-lucide="qr-code" class="w-12 h-12 text-neutral-dark/20 mb-2 group-hover:hidden"></i>
-                                    <span class="text-[10px] font-bold text-neutral-dark/40 uppercase group-hover:hidden">Tampilkan QRIS</span>
-                                </div>
+                    @if($paymentMethods->where('type', 'qris')->isNotEmpty())
+                        <div>
+                            <h4 class="text-xs font-black uppercase tracking-widest text-neutral-dark/40 mb-4">QRIS & E-Wallet</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                @foreach($paymentMethods->where('type', 'qris') as $qris)
+                                    <div class="p-4 border-2 border-neutral-light rounded-2xl bg-neutral-light/5 text-center">
+                                        <h4 class="font-bold text-neutral-dark mb-3">{{ $qris->name }}</h4>
+                                        <div class="aspect-square bg-white rounded-xl flex flex-col items-center justify-center border border-neutral-light p-2 overflow-hidden">
+                                            <img src="{{ asset('storage/' . $qris->qr_image) }}" alt="{{ $qris->name }}" class="w-full h-full object-contain">
+                                        </div>
+                                        <p class="text-[10px] mt-3 text-neutral-dark/40 font-bold uppercase tracking-tighter">Scan untuk membayar</p>
+                                    </div>
+                                @endforeach
                             </div>
-                            <p class="text-[10px] mt-2 text-center text-neutral-dark/40 font-medium">Klik untuk memperbesar</p>
                         </div>
-                    </div>
+                    @endif
+
+                    @if($paymentMethods->isEmpty())
+                        <div class="p-12 text-center bg-neutral-light/10 rounded-3xl border-2 border-dashed border-neutral-light">
+                            <i data-lucide="info" class="w-12 h-12 mx-auto text-neutral-dark/20 mb-4"></i>
+                            <p class="text-neutral-dark/40 font-bold uppercase tracking-widest text-xs">Belum ada metode pembayaran yang tersedia.</p>
+                            <p class="text-neutral-dark/40 text-[10px] mt-1">Silakan hubungi admin atau tunggu hingga admin menambahkan rekening.</p>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -160,7 +173,7 @@
                     </div>
                     <div>
                         <span class="text-neutral-dark/40 block">Gunung & Jalur</span>
-                        <span class="font-bold text-neutral-dark">${bookingData.jalur.gunung.nama} - ${bookingData.jalur.nama_jalur}</span>
+                        <span class="font-bold text-neutral-dark">${bookingData.gunung.nama} - ${bookingData.jalur.nama_jalur}</span>
                     </div>
                     <div>
                         <span class="text-neutral-dark/40 block">Tanggal Naik</span>
@@ -177,6 +190,7 @@
             document.getElementById('loading-overlay').classList.add('hidden');
         } catch (error) {
             console.error(error);
+            document.getElementById('loading-overlay').classList.add('hidden');
             window.showAlert('Gagal memuat detail booking.', 'danger');
         }
     }
