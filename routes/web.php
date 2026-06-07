@@ -44,7 +44,7 @@ Route::get('/auth/session-bridge', function (Illuminate\Http\Request $request) {
 });
 
 // Protected Routes
- (Simulated with simple guest check for now, 
+// (Simulated with simple guest check for now, 
 // as real auth will be handled via JWT in JS)
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
