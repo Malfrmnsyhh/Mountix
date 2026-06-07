@@ -57,6 +57,12 @@ class AuthController extends Controller
       return response()->json(['error' => 'Kredensial email atau password salah'], 401);
     }
 
+    // Sync session for Admin (Agar bisa akses Dashboard Blade)
+    $user = auth('api')->user();
+    if ($user->role === 'admin') {
+        auth('web')->login($user);
+    }
+
     return $this->respondWithToken($token, 'Login berhasil');
   }
 
@@ -68,6 +74,7 @@ class AuthController extends Controller
   public function logout()
   {
     auth('api')->logout();
+    auth('web')->logout();
     return response()->json(['message' => 'Berhasil logout']);
   }
 

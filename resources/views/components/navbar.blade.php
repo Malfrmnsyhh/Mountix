@@ -28,6 +28,14 @@
                                 <i data-lucide="chevron-down" class="w-4 h-4"></i>
                             </button>
                             <div class="absolute right-0 w-48 mt-2 py-2 bg-white text-neutral-dark rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                                @if(auth()->check() && auth()->user()->role === 'admin')
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 bg-primary/5 text-primary font-bold hover:bg-primary/10">Admin Panel</a>
+                                    <hr class="my-1 border-neutral-light">
+                                @endif
+                                <div id="nav-admin-link" class="hidden">
+                                    <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 bg-primary/5 text-primary font-bold hover:bg-primary/10">Admin Panel</a>
+                                    <hr class="my-1 border-neutral-light">
+                                </div>
                                 <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light">Profil Saya</a>
                                 <a href="{{ route('booking.index') }}" class="block px-4 py-2 hover:bg-neutral-light">Booking Saya</a>
                                 <hr class="my-1 border-neutral-light">
@@ -56,11 +64,17 @@
         
         const guestNav = document.getElementById('nav-guest');
         const userNav = document.getElementById('nav-user');
+        const adminLink = document.getElementById('nav-admin-link');
         const userNameElem = document.getElementById('nav-user-name');
 
         if (token && user) {
             userNameElem.textContent = user.name;
             userNav.classList.remove('hidden');
+            
+            // Show admin link if role is admin
+            if (user.role === 'admin') {
+                adminLink.classList.remove('hidden');
+            }
         } else {
             guestNav.classList.remove('hidden');
         }
