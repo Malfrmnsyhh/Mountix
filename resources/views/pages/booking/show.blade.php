@@ -62,7 +62,7 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold">Gunung & Jalur</span>
-                                <span class="font-bold text-neutral-dark">{{ $booking->jalur->gunung->nama }} - {{ $booking->jalur->nama_jalur }}</span>
+                                <span class="font-bold text-neutral-dark">{{ ($booking->jalur && $booking->jalur->gunung) ? ($booking->jalur->gunung->nama . ' - ' . $booking->jalur->nama_jalur) : 'Data Tidak Ditemukan' }}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -71,7 +71,7 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold">Tanggal Pendakian</span>
-                                <span class="font-bold text-neutral-dark">{{ \Carbon\Carbon::parse($booking->tanggal_naik)->format('d F Y') }}</span>
+                                <span class="font-bold text-neutral-dark">{{ $booking->tanggal_naik ? \Carbon\Carbon::parse($booking->tanggal_naik)->format('d F Y') : '-' }}</span>
                             </div>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold">Jumlah Peserta</span>
-                                <span class="font-bold text-neutral-dark">{{ $booking->jumlah_orang }} Orang</span>
+                                <span class="font-bold text-neutral-dark">{{ $booking->jumlah_orang ?? 0 }} Orang</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -91,7 +91,7 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold">Durasi</span>
-                                <span class="font-bold text-neutral-dark">Estimasi {{ $booking->jalur->estimasi_jam }} Jam</span>
+                                <span class="font-bold text-neutral-dark">Estimasi {{ $booking->jalur->estimasi_jam ?? '-' }} Jam</span>
                             </div>
                         </div>
                     </div>

@@ -8,6 +8,9 @@ class BookingController extends Controller
 {
     public function index()
     {
+        if (!auth()->check()) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
         $bookings = auth()->user()->bookings()->with(['jalur.gunung', 'payment'])->latest()->get();
         return view('pages.booking.index', compact('bookings'));
     }

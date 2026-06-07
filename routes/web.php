@@ -44,19 +44,19 @@ Route::get('/auth/session-bridge', function (Illuminate\Http\Request $request) {
 });
 
 // Protected Routes
-// (Simulated with simple guest check for now, 
-// as real auth will be handled via JWT in JS)
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
-Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
-Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
-Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
+    Route::get('/booking/create', [BookingController::class, 'create'])->name('booking.create');
+    Route::get('/booking', [BookingController::class, 'index'])->name('booking.index');
+    Route::get('/booking/{id}', [BookingController::class, 'show'])->name('booking.show');
 
-Route::get('/payment/{booking_id}', [PaymentController::class, 'create'])->name('payment.create');
-Route::get('/payment/{booking_id}/success', [PaymentController::class, 'success'])->name('payment.success');
+    Route::get('/payment/{booking_id}', [PaymentController::class, 'create'])->name('payment.create');
+    Route::get('/payment/{booking_id}/success', [PaymentController::class, 'success'])->name('payment.success');
 
-Route::get('/eticket/{booking_id}', [ETicketController::class, 'show'])->name('eticket.show');
+    Route::get('/eticket/{booking_id}', [ETicketController::class, 'show'])->name('eticket.show');
+});
 
 // Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {

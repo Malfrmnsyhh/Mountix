@@ -61,13 +61,19 @@
 
                             <div class="flex items-start gap-6">
                                 <div class="w-20 h-20 rounded-2xl overflow-hidden flex-shrink-0">
-                                    <img src="{{ $booking->jalur->gunung->foto_cover ? (filter_var($booking->jalur->gunung->foto_cover, FILTER_VALIDATE_URL) ? $booking->jalur->gunung->foto_cover : asset('storage/' . $booking->jalur->gunung->foto_cover)) : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400' }}" 
-                                         class="w-full h-full object-cover" alt="{{ $booking->jalur->gunung->nama }}">
+                                    @if($booking->jalur && $booking->jalur->gunung)
+                                        <img src="{{ $booking->jalur->gunung->foto_cover ? (filter_var($booking->jalur->gunung->foto_cover, FILTER_VALIDATE_URL) ? $booking->jalur->gunung->foto_cover : asset('storage/' . $booking->jalur->gunung->foto_cover)) : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=400' }}" 
+                                             class="w-full h-full object-cover" alt="{{ $booking->jalur->gunung->nama }}">
+                                    @else
+                                        <div class="w-full h-full bg-neutral-light flex items-center justify-center">
+                                            <i data-lucide="image-off" class="text-neutral-dark/20"></i>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="flex-grow">
-                                    <h3 class="text-xl font-bold text-primary mb-1">{{ $booking->jalur->gunung->nama }}</h3>
+                                    <h3 class="text-xl font-bold text-primary mb-1">{{ $booking->jalur->gunung->nama ?? 'Gunung Tidak Ditemukan' }}</h3>
                                     <p class="text-sm text-neutral-dark/60 mb-4 flex items-center">
-                                        <i data-lucide="map-pin" class="w-4 h-4 mr-1 text-secondary"></i> {{ $booking->jalur->nama_jalur }}
+                                        <i data-lucide="map-pin" class="w-4 h-4 mr-1 text-secondary"></i> {{ $booking->jalur->nama_jalur ?? 'Jalur Tidak Ditemukan' }}
                                     </p>
                                     
                                     <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
