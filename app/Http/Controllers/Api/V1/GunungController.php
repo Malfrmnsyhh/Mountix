@@ -45,7 +45,7 @@ class GunungController extends Controller
     $data = $request->validated();
 
     if ($request->hasFile('foto_cover')) {
-      $data['foto_cover'] = $request->file('foto_cover')->store('gunung_covers', 'public');
+      $data['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
     }
 
     $gunung = Gunung::create($data);
@@ -70,7 +70,7 @@ class GunungController extends Controller
     if ($request->hasFile('foto_cover')) {
       if ($gunung->foto_cover)
         Storage::disk('public')->delete($gunung->foto_cover);
-      $data['foto_cover'] = $request->file('foto_cover')->store('gunung_covers', 'public');
+      $data['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
     }
 
     $gunung->update($data);

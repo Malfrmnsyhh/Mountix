@@ -35,6 +35,18 @@ class BookingController extends Controller
     return BookingResource::collection($bookings);
   }
 
+  public function show(Booking $booking)
+  {
+    $user = auth('api')->user();
+
+    if ($user->role !== 'admin' && $booking->user_id !== $user->id) {
+      return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $booking->load(['jalur.gunung', 'members', 'payment', 'eTickets']);
+    return new BookingResource($booking);
+  }
+
   public function store(Request $request)
   {
     $request->validate([

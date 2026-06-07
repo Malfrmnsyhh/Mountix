@@ -36,33 +36,40 @@
                 </h2>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="p-6 border-2 border-primary rounded-2xl relative">
+                    <!-- Bank Transfer -->
+                    <div class="p-6 border-2 border-primary rounded-2xl relative bg-primary/5">
                         <div class="absolute top-4 right-4 text-primary">
                             <i data-lucide="check-circle-2" class="w-6 h-6"></i>
                         </div>
                         <h4 class="font-bold text-neutral-dark mb-2">Transfer Bank (Manual)</h4>
-                        <p class="text-sm text-neutral-dark/60 mb-4">Silakan transfer ke rekening berikut:</p>
-                        <div class="bg-neutral-light p-4 rounded-xl space-y-2">
+                        <p class="text-xs text-neutral-dark/60 mb-4">Silakan transfer ke rekening resmi kami:</p>
+                        <div class="bg-white p-4 rounded-xl space-y-3 border border-primary/20">
                             <div class="flex justify-between items-center">
-                                <span class="text-xs text-neutral-dark/40 uppercase">Bank</span>
-                                <span class="text-sm font-bold text-neutral-dark">Bank Mandiri</span>
+                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">Bank</span>
+                                <span class="text-sm font-bold text-neutral-dark">BCA</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs text-neutral-dark/40 uppercase">No. Rekening</span>
-                                <span class="text-sm font-bold text-neutral-dark">123-00-123456-7</span>
+                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">No. Rekening</span>
+                                <span class="text-sm font-black text-primary tracking-wider">829-0123-456</span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-xs text-neutral-dark/40 uppercase">Atas Nama</span>
-                                <span class="text-sm font-bold text-neutral-dark">PT MOUNTIX INDONESIA</span>
+                                <span class="text-[10px] text-neutral-dark/40 uppercase font-bold">Atas Nama</span>
+                                <span class="text-sm font-bold text-neutral-dark uppercase">SANG SURYA</span>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="p-6 border-2 border-neutral-light rounded-2xl opacity-50 cursor-not-allowed">
-                        <h4 class="font-bold text-neutral-dark mb-2">Credit Card / E-Wallet</h4>
-                        <p class="text-sm text-neutral-dark/60 mb-4">Otomatis Terverifikasi</p>
-                        <div class="bg-neutral-light p-4 rounded-xl text-center text-xs font-bold text-neutral-dark/40 uppercase">
-                            Segera Hadir
+                    <!-- QRIS -->
+                    <div class="p-6 border-2 border-neutral-light rounded-2xl bg-neutral-light/10">
+                        <h4 class="font-bold text-neutral-dark mb-2">QRIS (All E-Wallet)</h4>
+                        <p class="text-[10px] text-neutral-dark/60 mb-4">Scan kode QR di bawah menggunakan aplikasi pembayaran Anda.</p>
+                        <div class="aspect-square bg-white rounded-xl flex flex-col items-center justify-center border border-neutral-light p-4">
+                            <!-- Placeholder QRIS -->
+                            <div class="w-full h-full bg-neutral-light flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-dark/10">
+                                <i data-lucide="qr-code" class="w-12 h-12 text-neutral-dark/20 mb-2"></i>
+                                <span class="text-[10px] font-bold text-neutral-dark/40 uppercase">Tampilkan QRIS</span>
+                            </div>
+                            <p class="text-[10px] mt-2 text-center text-neutral-dark/40 font-medium">Klik untuk memperbesar</p>
                         </div>
                     </div>
                 </div>
