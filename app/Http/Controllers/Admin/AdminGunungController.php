@@ -40,13 +40,17 @@ class AdminGunungController extends Controller
             'foto_cover' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('foto_cover')) {
-            $validated['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
+        try {
+            if ($request->hasFile('foto_cover')) {
+                $validated['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
+            }
+
+            Gunung::create($validated);
+
+            return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan data: ' . $e->getMessage());
         }
-
-        Gunung::create($validated);
-
-        return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil ditambahkan.');
     }
 
     public function show(Gunung $gunung)
@@ -72,16 +76,20 @@ class AdminGunungController extends Controller
             'foto_cover' => 'nullable|image|max:2048',
         ]);
 
-        if ($request->hasFile('foto_cover')) {
-            if ($gunung->foto_cover) {
-                Storage::disk('public')->delete($gunung->foto_cover);
+        try {
+            if ($request->hasFile('foto_cover')) {
+                if ($gunung->foto_cover && !filter_var($gunung->foto_cover, FILTER_VALIDATE_URL)) {
+                    Storage::disk('public')->delete($gunung->foto_cover);
+                }
+                $validated['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
             }
-            $validated['foto_cover'] = $request->file('foto_cover')->store('gunung', 'public');
+
+            $gunung->update($validated);
+
+            return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
-
-        $gunung->update($validated);
-
-        return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil diperbarui.');
     }
 
     public function destroy(Gunung $gunung)
