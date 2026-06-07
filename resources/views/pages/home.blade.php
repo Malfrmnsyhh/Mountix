@@ -26,15 +26,6 @@
                 <i data-lucide="search" class="text-neutral-dark/40 mr-3"></i>
                 <input type="text" placeholder="Cari nama gunung..." class="w-full focus:outline-none text-neutral-dark">
             </div>
-            <div class="flex-grow flex items-center px-4 py-2">
-                <i data-lucide="map-pin" class="text-neutral-dark/40 mr-3"></i>
-                <select class="w-full focus:outline-none text-neutral-dark bg-transparent appearance-none">
-                    <option value="">Semua Lokasi</option>
-                    <option value="jawa-barat">Jawa Barat</option>
-                    <option value="jawa-tengah">Jawa Tengah</option>
-                    <option value="jawa-timur">Jawa Timur</option>
-                </select>
-            </div>
             <button class="bg-secondary text-white px-8 py-3 rounded-xl font-bold hover:bg-secondary/90 transition-all duration-300">
                 Cari Sekarang
             </button>
