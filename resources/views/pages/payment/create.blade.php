@@ -65,9 +65,12 @@
                         <p class="text-[10px] text-neutral-dark/60 mb-4">Scan kode QR di bawah menggunakan aplikasi pembayaran Anda.</p>
                         <div class="aspect-square bg-white rounded-xl flex flex-col items-center justify-center border border-neutral-light p-4">
                             <!-- Placeholder QRIS -->
-                            <div class="w-full h-full bg-neutral-light flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-dark/10">
-                                <i data-lucide="qr-code" class="w-12 h-12 text-neutral-dark/20 mb-2"></i>
-                                <span class="text-[10px] font-bold text-neutral-dark/40 uppercase">Tampilkan QRIS</span>
+                            <div class="w-full h-full bg-neutral-light flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-dark/10 overflow-hidden relative group">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Placeholder" class="w-full h-full object-contain p-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                                <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/60 group-hover:bg-transparent transition-all">
+                                    <i data-lucide="qr-code" class="w-12 h-12 text-neutral-dark/20 mb-2 group-hover:hidden"></i>
+                                    <span class="text-[10px] font-bold text-neutral-dark/40 uppercase group-hover:hidden">Tampilkan QRIS</span>
+                                </div>
                             </div>
                             <p class="text-[10px] mt-2 text-center text-neutral-dark/40 font-medium">Klik untuk memperbesar</p>
                         </div>
@@ -210,6 +213,12 @@
         } finally {
             btn.disabled = false;
             loader.classList.add('hidden');
+        }
+    }
+</script>
+@endpush
+@endsection
+dd('hidden');
         }
     }
 </script>

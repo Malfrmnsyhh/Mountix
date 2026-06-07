@@ -9,7 +9,7 @@ class BookingResource extends JsonResource
 {
   public function toArray(Request $request): array
   {
-    return [
+    $data = [
       'id' => $this->id,
       'kode_booking' => $this->kode_booking,
       'tanggal_naik' => $this->tanggal_naik,
@@ -20,8 +20,13 @@ class BookingResource extends JsonResource
       'catatan_admin' => $this->catatan_admin,
       'dibuat_pada' => $this->created_at->format('Y-m-d H:i:s'),
       // Tampilkan relasi jika sedang di-load oleh query builder
-      'gunung' => new GunungResource($this->whenLoaded('jalur.gunung')),
       'jalur' => new JalurResource($this->whenLoaded('jalur')),
     ];
+
+    if ($this->relationLoaded('jalur') && $this->jalur->relationLoaded('gunung')) {
+      $data['gunung'] = new GunungResource($this->jalur->gunung);
+    }
+
+    return $data;
   }
 }
