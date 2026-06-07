@@ -8,7 +8,8 @@ class BookingController extends Controller
 {
     public function index()
     {
-        return view('pages.booking.index');
+        $bookings = auth()->user()->bookings()->with(['jalur.gunung', 'payment'])->latest()->get();
+        return view('pages.booking.index', compact('bookings'));
     }
 
     public function create()
@@ -18,6 +19,7 @@ class BookingController extends Controller
 
     public function show($id)
     {
-        return view('pages.booking.show', compact('id'));
+        $booking = auth()->user()->bookings()->with(['jalur.gunung', 'members', 'payment'])->findOrFail($id);
+        return view('pages.booking.show', compact('booking'));
     }
 }
