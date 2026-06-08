@@ -80,7 +80,7 @@
         </ul>
 
         <div class="mt-10 pt-10 border-t border-neutral-light">
-            <form action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST" onsubmit="localStorage.removeItem('auth_token'); localStorage.removeItem('user');">
                 @csrf
                 <button type="submit" class="flex w-full items-center p-3 rounded-xl text-danger hover:bg-danger/10 transition-all group">
                     <i data-lucide="log-out" class="w-5 h-5 text-danger/60 group-hover:text-danger"></i>
