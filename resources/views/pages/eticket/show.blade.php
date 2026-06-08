@@ -91,8 +91,8 @@
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-neutral-dark/40 uppercase font-black block mb-1">Gunung - Jalur</span>
-                                    <span class="text-xl font-black text-primary uppercase">${b.jalur.gunung.nama}</span>
-                                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mt-1">${b.jalur.nama_jalur}</p>
+                                    <span class="text-xl font-black text-primary uppercase">${b.gunung?.nama || b.jalur?.gunung?.nama || 'Nama Gunung'}</span>
+                                    <p class="text-xs font-bold text-secondary uppercase tracking-widest mt-1">${b.jalur?.nama_jalur || 'Nama Jalur'}</p>
                                 </div>
                                 <div>
                                     <span class="text-[10px] text-neutral-dark/40 uppercase font-black block mb-1">Tanggal Naik</span>
