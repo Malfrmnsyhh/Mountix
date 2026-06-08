@@ -1,4 +1,4 @@
-<nav class="bg-primary text-white shadow-md">
+<nav class="bg-primary text-white shadow-md fixed top-0 w-full z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
             <!-- Logo -->
@@ -10,13 +10,12 @@
 
             <!-- Desktop Menu -->
             <div class="hidden md:flex space-x-8 items-center">
-                <a href="{{ route('home') }}" class="hover:text-secondary transition-colors duration-250">Beranda</a>
-                <a href="{{ route('gunung.index') }}" class="hover:text-secondary transition-colors duration-250">Gunung</a>
-                <a href="#" class="hover:text-secondary transition-colors duration-250">Tentang Kami</a>
+                <a href="{{ route('home') }}" class="hover:text-secondary transition-colors duration-250 {{ request()->routeIs('home') ? 'text-secondary font-bold' : '' }}">Beranda</a>
+                <a href="{{ route('gunung.index') }}" class="hover:text-secondary transition-colors duration-250 {{ request()->routeIs('gunung.*') ? 'text-secondary font-bold' : '' }}">Gunung</a>
+                <a href="{{ route('home') }}#about" class="hover:text-secondary transition-colors duration-250">Tentang Kami</a>
                 
                 <div id="nav-auth-links" class="flex items-center space-x-4 border-l border-white/20 pl-8">
                     @if(auth()->check())
-                        <!-- Jika Session Laravel Aktif (Prioritas) -->
                         <div id="nav-user-blade" class="flex items-center space-x-4">
                             <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
                             <div class="relative group">
@@ -29,15 +28,17 @@
                                         <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 bg-primary/5 text-primary font-bold hover:bg-primary/10">Admin Panel</a>
                                         <hr class="my-1 border-neutral-light">
                                     @endif
-                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light">Profil Saya</a>
-                                    <a href="{{ route('booking.index') }}" class="block px-4 py-2 hover:bg-neutral-light">Booking Saya</a>
+                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light {{ request()->routeIs('profile.show') ? 'bg-neutral-light font-bold' : '' }}">Profil Saya</a>
+                                    <a href="{{ route('profile.show') }}?tab=booking" class="block px-4 py-2 hover:bg-neutral-light {{ request()->routeIs('booking.index') ? 'bg-neutral-light font-bold' : '' }}">Booking Saya</a>
+                                    <a href="{{ route('profile.show') }}?tab=eticket" class="block px-4 py-2 hover:bg-neutral-light">
+                                        E-Ticket Aktif
+                                    </a>
                                     <hr class="my-1 border-neutral-light">
-                                    <button onclick="handleLogout()" class="w-full text-left block px-4 py-2 hover:bg-danger/10 text-danger">Keluar</button>
+                                    <button onclick="handleLogout()" class="w-full text-left block px-4 py-2 hover:bg-danger/10 text-danger font-bold">Keluar Akun</button>
                                 </div>
                             </div>
                         </div>
                     @else
-                        <!-- Jika Session Laravel Tidak Aktif, Cek LocalStorage (JS Backup) -->
                         <div id="nav-guest" class="hidden">
                             <a href="{{ route('login') }}" class="hover:text-secondary transition-colors duration-250">Masuk</a>
                             <a href="{{ route('register') }}" class="bg-secondary px-4 py-2 rounded-md hover:bg-secondary/90 transition-colors duration-250 ml-4">Daftar</a>
@@ -101,7 +102,7 @@
 
     async function handleLogout() {
         try {
-            const response = await fetch('/logout', {
+            await fetch('/logout', {
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}',

@@ -20,20 +20,24 @@
                     <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold mb-1">Status Saat Ini</span>
                     @php
                         $statusClasses = [
-                            'pending' => 'text-warning',
-                            'unpaid' => 'text-warning',
-                            'paid' => 'text-success',
-                            'success' => 'text-success',
-                            'failed' => 'text-danger',
-                            'expired' => 'text-danger',
+                            'draft' => 'text-neutral-dark',
+                            'pending_upload' => 'text-warning',
+                            'waiting_verification' => 'text-primary',
+                            'verified' => 'text-success',
+                            'ticket_issued' => 'text-success',
+                            'rejected' => 'text-danger',
+                            'cancelled' => 'text-neutral-dark',
+                            'completed' => 'text-success',
                         ];
                         $statusText = [
-                            'pending' => 'Menunggu Pembayaran',
-                            'unpaid' => 'Belum Dibayar',
-                            'paid' => 'Sudah Dibayar (Menunggu Verifikasi)',
-                            'success' => 'Berhasil / Tiket Terbit',
-                            'failed' => 'Gagal',
-                            'expired' => 'Kadaluarsa',
+                            'draft' => 'Draft',
+                            'pending_upload' => 'Menunggu Bukti Bayar',
+                            'waiting_verification' => 'Menunggu Verifikasi Admin',
+                            'verified' => 'Pembayaran Disetujui',
+                            'ticket_issued' => 'Tiket Telah Terbit',
+                            'rejected' => 'Ditolak',
+                            'cancelled' => 'Dibatalkan',
+                            'completed' => 'Selesai Pendakian',
                         ];
                         $class = $statusClasses[$booking->status] ?? 'text-neutral-dark';
                         $text = $statusText[$booking->status] ?? $booking->status;
@@ -41,9 +45,9 @@
                     <h2 class="text-2xl font-black {{ $class }} uppercase italic">{{ $text }}</h2>
                 </div>
                 <div class="hidden md:block">
-                    @if($booking->status === 'unpaid' || $booking->status === 'pending')
+                    @if(in_array($booking->status, ['pending_upload', 'waiting_verification']))
                         <i data-lucide="clock" class="w-12 h-12 text-warning animate-pulse"></i>
-                    @elseif($booking->status === 'paid' || $booking->status === 'success')
+                    @elseif(in_array($booking->status, ['verified', 'ticket_issued', 'completed']))
                         <i data-lucide="check-circle" class="w-12 h-12 text-success"></i>
                     @endif
                 </div>
@@ -62,7 +66,8 @@
                             </div>
                             <div>
                                 <span class="text-[10px] text-neutral-dark/40 block uppercase font-bold">Gunung & Jalur</span>
-                                <span class="font-bold text-neutral-dark">{{ ($booking->jalur && $booking->jalur->gunung) ? ($booking->jalur->gunung->nama . ' - ' . $booking->jalur->nama_jalur) : 'Data Tidak Ditemukan' }}</span>
+                                <span class="font-bold text-neutral-dark block">{{ $booking->jalur->gunung->nama ?? 'N/A' }}</span>
+                                <span class="text-xs text-neutral-dark/60 italic">{{ $booking->jalur->nama_jalur ?? 'N/A' }}</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-4">
@@ -98,7 +103,7 @@
                 </div>
             </div>
 
-            <!-- Participants List -->
+            <!-- Participants List (FIXED) -->
             <div class="bg-white p-8 rounded-3xl shadow-sm border border-neutral-light">
                 <h3 class="text-lg font-bold text-primary mb-6 flex items-center">
                     <i data-lucide="list" class="w-5 h-5 mr-3"></i> Daftar Peserta
@@ -109,17 +114,25 @@
                             <tr class="text-[10px] text-neutral-dark/40 uppercase font-bold border-b border-neutral-light">
                                 <th class="pb-4">No</th>
                                 <th class="pb-4">Nama Lengkap</th>
-                                <th class="pb-4">No. Identitas</th>
-                                <th class="pb-4">Kontak Darurat</th>
+                                <th class="pb-4">No. NIK</th>
+                                <th class="pb-4">L/P</th>
+                                <th class="pb-4">Peran</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-neutral-light">
                             @foreach($booking->members as $index => $member)
                                 <tr>
                                     <td class="py-4 text-sm text-neutral-dark/60">{{ $index + 1 }}</td>
-                                    <td class="py-4 text-sm font-bold text-neutral-dark">{{ $member->nama }}</td>
-                                    <td class="py-4 text-sm text-neutral-dark/60">{{ $member->no_identitas }}</td>
-                                    <td class="py-4 text-sm text-neutral-dark/60">{{ $member->kontak_darurat }}</td>
+                                    <td class="py-4 text-sm font-bold text-neutral-dark">{{ $member->nama_lengkap }}</td>
+                                    <td class="py-4 text-sm text-neutral-dark/60 font-mono">{{ $member->nik }}</td>
+                                    <td class="py-4 text-sm text-neutral-dark/60 uppercase">{{ $member->jenis_kelamin }}</td>
+                                    <td class="py-4">
+                                        @if($member->is_leader)
+                                            <span class="bg-primary/10 text-primary text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Ketua</span>
+                                        @else
+                                            <span class="bg-neutral-light text-neutral-dark/40 text-[9px] font-black px-2 py-0.5 rounded-full uppercase">Anggota</span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -139,26 +152,26 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-neutral-dark/60">Biaya Layanan</span>
-                        <span class="font-bold text-success">Gratis</span>
+                        <span class="font-bold text-success font-mono">GRATIS</span>
                     </div>
                     <div class="border-t border-neutral-light pt-4 flex justify-between items-center">
                         <span class="font-bold text-neutral-dark">Total</span>
-                        <span class="text-2xl font-black text-primary">Rp {{ number_format($booking->total_bayar, 0, ',', '.') }}</span>
+                        <span class="text-2xl font-black text-primary italic">Rp {{ number_format($booking->total_bayar, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    @if($booking->status === 'unpaid' || $booking->status === 'pending')
-                        <a href="{{ route('payment.create', $booking->id) }}" class="w-full bg-secondary text-white py-4 rounded-2xl text-center font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20 block">
+                    @if($booking->status === 'unpaid' || $booking->status === 'pending_upload')
+                        <a href="{{ route('payment.create', $booking->id) }}" class="w-full bg-secondary text-white py-4 rounded-2xl text-center font-bold hover:bg-secondary/90 transition-all shadow-lg shadow-secondary/20 block uppercase tracking-widest text-sm">
                             Bayar Sekarang
                         </a>
-                    @elseif($booking->status === 'success')
-                        <a href="{{ route('eticket.show', $booking->id) }}" class="w-full bg-primary text-white py-4 rounded-2xl text-center font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 block">
+                    @elseif(in_array($booking->status, ['verified', 'ticket_issued', 'completed']))
+                        <a href="{{ route('eticket.show', $booking->id) }}" class="w-full bg-primary text-white py-4 rounded-2xl text-center font-bold hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 block uppercase tracking-widest text-sm">
                             Lihat E-Ticket
                         </a>
                     @endif
                     
-                    <button onclick="window.print()" class="w-full bg-white text-neutral-dark border border-neutral-light py-4 rounded-2xl font-bold hover:bg-neutral-light transition-all flex items-center justify-center">
+                    <button onclick="window.print()" class="w-full bg-white text-neutral-dark border border-neutral-light py-4 rounded-2xl font-bold hover:bg-neutral-light transition-all flex items-center justify-center text-sm uppercase tracking-widest">
                         <i data-lucide="printer" class="w-5 h-5 mr-2"></i> Cetak Detail
                     </button>
                 </div>

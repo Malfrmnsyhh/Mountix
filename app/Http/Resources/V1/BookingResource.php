@@ -21,6 +21,7 @@ class BookingResource extends JsonResource
       'dibuat_pada' => $this->created_at->format('Y-m-d H:i:s'),
       // Tampilkan relasi jika sedang di-load oleh query builder
       'jalur' => new JalurResource($this->whenLoaded('jalur')),
+      'members' => $this->whenLoaded('members'),
     ];
 
     if ($this->relationLoaded('jalur') && $this->jalur->relationLoaded('gunung')) {

@@ -37,12 +37,12 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-semibold text-neutral-dark mb-2">Tanggal Naik</label>
-                        <input type="date" id="tanggal_naik" required 
+                        <input type="date" id="tanggal_naik" name="tanggal_naik" required 
                             class="w-full px-4 py-3 bg-neutral-light border border-transparent rounded-xl focus:border-primary focus:bg-white focus:outline-none transition-all">
                     </div>
                     <div>
                         <label class="block text-sm font-semibold text-neutral-dark mb-2">Tanggal Turun</label>
-                        <input type="date" id="tanggal_turun" required 
+                        <input type="date" id="tanggal_turun" name="tanggal_turun" required 
                             class="w-full px-4 py-3 bg-neutral-light border border-transparent rounded-xl focus:border-primary focus:bg-white focus:outline-none transition-all">
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                 </div>
 
                 <div id="participants-container" class="space-y-6">
-                    <!-- Participant forms inserted here -->
+                    <!-- Participant forms will be inserted here -->
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
                     </div>
                     <div class="flex justify-between text-sm">
                         <span class="text-neutral-dark/60">Jumlah Peserta</span>
-                        <span id="participant-count-display" class="font-bold text-neutral-dark">1 Orang</span>
+                        <span id="participant-count-display" class="font-bold text-neutral-dark">0 Orang</span>
                     </div>
                     <hr class="border-neutral-light">
                     <div class="flex justify-between items-center">
@@ -91,7 +91,7 @@
                     <i data-lucide="loader-2" id="loader" class="ml-2 w-5 h-5 animate-spin hidden"></i>
                 </button>
                 
-                <p class="mt-4 text-[10px] text-center text-neutral-dark/40">
+                <p class="mt-4 text-[10px] text-center text-neutral-dark/40 leading-relaxed">
                     Pastikan data yang dimasukkan benar. Perubahan data setelah booking mungkin dikenakan biaya tambahan.
                 </p>
             </div>
@@ -109,7 +109,7 @@
     document.addEventListener('DOMContentLoaded', async function() {
         if (!localStorage.getItem('auth_token')) {
             window.showAlert('Anda harus login untuk melakukan booking.', 'danger');
-            window.location.href = '/login';
+            window.location.href = '/login?redirect=' + encodeURIComponent(window.location.pathname + window.location.search);
             return;
         }
 
@@ -119,11 +119,18 @@
             return;
         }
 
-        // Initialize with 1 participant (Leader)
-        addParticipant(true);
-        await fetchJalurInfo();
-        
-        // Min date today
+        try {
+            await fetchJalurInfo();
+            // PENTING: Panggil addParticipant setelah Jalur Info berhasil dimuat atau gagal tapi tetap lanjut
+        } catch (e) {
+            console.error(e);
+        } finally {
+            if (participantCount === 0) {
+                addParticipant(true);
+            }
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
         const today = new Date().toISOString().split('T')[0];
         document.getElementById('tanggal_naik').min = today;
         document.getElementById('tanggal_turun').min = today;
@@ -137,30 +144,22 @@
 
     async function fetchJalurInfo() {
         try {
-            // We need a way to get jalur info. Since we don't have a direct getJalur API yet, 
-            // we'll find it from its mountain. For simplicity, we assume we need to fetch mountain detail or we'd have a specific API.
-            // But wait, the API was: Route::apiResource('gunung.jalur', JalurController::class)
-            // So we need gunung_id too. Let's adjust or assume we have it or fetch it.
-            // For now, let's fetch all mountains and find the jalur if needed, or better, 
-            // we should have added an API for single jalur. 
-            // Looking at routes/api.php: Route::apiResource('gunung.jalur', JalurController::class)->only(['index', 'show']);
-            // It expects /v1/gunung/{gunung}/jalur/{jalur}.
-            // Let's assume the user clicked from detail page which has the info.
+            // Kita panggil API /gunung yang ber-paginasi (data dibungkus 'data')
+            const response = await window.apiClient.get('/gunung');
+            const mountains = response.data.data || response.data;
             
-            // Temporary workaround: we need the gunung_id. Let's check if we can find it.
-            // For now, I'll fetch ALL mountains and find the one with this jalur. 
-            // In a real app, you'd pass both IDs in URL.
-            const response = await window.gunungService.getGunungs();
             let foundJalur = null;
             let foundGunung = null;
 
-            for (const g of response.data) {
-                // Fetch full detail for each mountain to see jalurs
-                const detail = await window.gunungService.getGunungDetail(g.id);
-                const jalur = detail.data.jalur.find(j => j.id == jalurId);
-                if (jalur) {
-                    foundJalur = jalur;
-                    foundGunung = detail.data;
+            for (const mountain of (Array.isArray(mountains) ? mountains : [])) {
+                const detailResp = await window.apiClient.get(`/gunung/${mountain.id}`);
+                const mountainData = detailResp.data.data || detailResp.data;
+                const jalurs = mountainData.jalur || [];
+                
+                const target = jalurs.find(j => j.id == jalurId);
+                if (target) {
+                    foundJalur = target;
+                    foundGunung = mountainData;
                     break;
                 }
             }
@@ -171,34 +170,29 @@
                 
                 document.getElementById('jalur-summary').innerHTML = `
                     <div class="flex items-start space-x-4">
-                        <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                            <img src="${foundGunung.foto_cover || 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200'}" class="w-full h-full object-cover">
+                        <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-neutral-light">
+                            <img src="${foundGunung.foto_cover ? foundGunung.foto_cover : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200'}" class="w-full h-full object-cover">
                         </div>
                         <div>
-                            <span class="text-xs text-secondary font-bold uppercase tracking-wider">${foundGunung.nama}</span>
-                            <h4 class="text-lg font-bold text-neutral-dark">${foundJalur.nama_jalur}</h4>
-                            <p class="text-xs text-neutral-dark/40 flex items-center mt-1">
-                                <i data-lucide="clock" class="w-3 h-3 mr-1"></i> Estimasi ${foundJalur.estimasi_jam} Jam
+                            <span class="text-[10px] text-secondary font-black uppercase tracking-widest">${foundGunung.nama}</span>
+                            <h4 class="text-lg font-bold text-primary">${foundJalur.nama_jalur}</h4>
+                            <p class="text-xs text-neutral-dark/40 flex items-center mt-1 font-medium">
+                                <i data-lucide="clock" class="w-3 h-3 mr-1"></i> Estimasi ${foundJalur.estimasi_jam || 0} Jam
                             </p>
                         </div>
                     </div>
-                    <div class="bg-neutral-light/50 p-4 rounded-xl border border-neutral-light">
-                        <span class="text-xs text-neutral-dark/40 block mb-1">Status Jalur</span>
-                        <span class="text-sm font-bold text-success flex items-center">
-                            <i data-lucide="check-circle" class="w-4 h-4 mr-2"></i> Terbuka untuk Booking
+                    <div class="bg-primary/5 p-4 rounded-2xl border border-primary/10">
+                        <span class="text-[10px] text-primary/60 block mb-1 font-black uppercase tracking-widest">Ketersediaan</span>
+                        <span class="text-sm font-bold text-primary flex items-center">
+                            <i data-lucide="check-circle-2" class="w-4 h-4 mr-2"></i> Kuota Tersedia
                         </span>
                     </div>
                 `;
                 lucide.createIcons();
-            } else {
-                window.showAlert('Jalur tidak ditemukan.', 'danger');
-                window.location.href = '/gunung';
             }
         } catch (error) {
-            console.error(error);
-            window.showAlert('Gagal memuat data jalur.', 'danger');
-        } finally {
-            document.getElementById('loading-overlay').classList.add('hidden');
+            console.error("Error in fetchJalurInfo:", error);
+            throw error;
         }
     }
 
@@ -206,16 +200,19 @@
         participantCount++;
         const container = document.getElementById('participants-container');
         const card = document.createElement('div');
-        card.className = 'participant-card bg-neutral-light/30 p-6 rounded-2xl border border-neutral-light relative';
-        card.id = `participant-${participantCount}`;
+        card.className = 'participant-card bg-neutral-light/20 p-6 rounded-3xl border border-neutral-light relative overflow-hidden group hover:border-primary/20 transition-all';
+        card.id = `participant-container-${participantCount}`;
         
         card.innerHTML = `
             <div class="flex justify-between items-center mb-6">
-                <span class="bg-primary text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                    Peserta #${participantCount} ${isLeader ? '(Ketua)' : ''}
-                </span>
+                <div class="flex items-center gap-2">
+                    <span class="bg-primary text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                        Peserta #${participantCount}
+                    </span>
+                    ${isLeader ? '<span class="text-[10px] text-secondary font-black uppercase tracking-widest">Ketua Rombongan</span>' : ''}
+                </div>
                 ${!isLeader ? `
-                    <button type="button" onclick="removeParticipant(${participantCount})" class="text-danger hover:text-danger/70 transition-colors">
+                    <button type="button" onclick="removeParticipant(${participantCount})" class="text-danger hover:scale-110 transition-transform p-1">
                         <i data-lucide="trash-2" class="w-5 h-5"></i>
                     </button>
                 ` : ''}
@@ -223,32 +220,32 @@
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Nama Lengkap (sesuai KTP)</label>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Nama Lengkap (Sesuai KTP)</label>
                     <input type="text" name="nama_lengkap[]" required placeholder="Contoh: John Doe" 
-                        class="w-full px-4 py-2 bg-white border border-neutral-light rounded-lg focus:border-primary focus:outline-none transition-all text-sm">
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Nomor NIK</label>
-                    <input type="text" name="nik[]" required maxlength="16" minlength="16" placeholder="16 digit NIK" 
-                        class="w-full px-4 py-2 bg-white border border-neutral-light rounded-lg focus:border-primary focus:outline-none transition-all text-sm">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Nomor NIK</label>
+                    <input type="text" name="nik[]" required maxlength="16" minlength="16" placeholder="16 Digit NIK" 
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Tanggal Lahir</label>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Tanggal Lahir</label>
                     <input type="date" name="tanggal_lahir[]" required 
-                        class="w-full px-4 py-2 bg-white border border-neutral-light rounded-lg focus:border-primary focus:outline-none transition-all text-sm">
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
                 </div>
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Jenis Kelamin</label>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Jenis Kelamin</label>
                     <select name="jenis_kelamin[]" required 
-                        class="w-full px-4 py-2 bg-white border border-neutral-light rounded-lg focus:border-primary focus:outline-none transition-all text-sm">
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium appearance-none">
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
                     </select>
                 </div>
                 <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Alamat Lengkap</label>
-                    <textarea name="alamat[]" required rows="2" placeholder="Alamat lengkap domisili saat ini" 
-                        class="w-full px-4 py-2 bg-white border border-neutral-light rounded-lg focus:border-primary focus:outline-none transition-all text-sm resize-none"></textarea>
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Alamat Lengkap</label>
+                    <textarea name="alamat[]" required rows="2" placeholder="Alamat lengkap domisili saat ini..." 
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium resize-none"></textarea>
                 </div>
             </div>
         `;
@@ -259,28 +256,18 @@
     }
 
     function removeParticipant(id) {
-        document.getElementById(`participant-${id}`).remove();
-        // Renumbering participants
-        const cards = document.querySelectorAll('.participant-card');
-        participantCount = 0;
-        cards.forEach((card, index) => {
-            participantCount++;
-            card.id = `participant-${participantCount}`;
-            const label = card.querySelector('.bg-primary');
-            label.textContent = `Peserta #${participantCount} ${participantCount === 1 ? '(Ketua)' : ''}`;
-            const deleteBtn = card.querySelector('button');
-            if (deleteBtn) {
-                deleteBtn.setAttribute('onclick', `removeParticipant(${participantCount})`);
-            }
-        });
-        updateSummary();
+        const card = document.getElementById(`participant-container-${id}`);
+        if (card) {
+            card.remove();
+            updateSummary();
+        }
     }
 
     function updateSummary() {
-        const count = document.querySelectorAll('.participant-card').length;
+        const currentCount = document.querySelectorAll('.participant-card').length;
         document.getElementById('price-per-person').textContent = `Rp ${new Intl.NumberFormat('id-ID').format(pricePerPerson)}`;
-        document.getElementById('participant-count-display').textContent = `${count} Orang`;
-        document.getElementById('total-price').textContent = `Rp ${new Intl.NumberFormat('id-ID').format(pricePerPerson * count)}`;
+        document.getElementById('participant-count-display').textContent = `${currentCount} Orang`;
+        document.getElementById('total-price').textContent = `Rp ${new Intl.NumberFormat('id-ID').format(pricePerPerson * currentCount)}`;
     }
 
     async function handleBookingSubmit(e) {
@@ -289,22 +276,22 @@
         const btn = document.getElementById('submit-btn');
         const loader = document.getElementById('loader');
         
-        const participants = [];
         const names = document.getElementsByName('nama_lengkap[]');
         const niks = document.getElementsByName('nik[]');
         const dobs = document.getElementsByName('tanggal_lahir[]');
         const genders = document.getElementsByName('jenis_kelamin[]');
         const addresses = document.getElementsByName('alamat[]');
 
+        const members = [];
         for (let i = 0; i < names.length; i++) {
-            participants.push({
+            members.push({
                 nama_lengkap: names[i].value,
                 nik: niks[i].value,
                 tanggal_lahir: dobs[i].value,
                 jenis_kelamin: genders[i].value,
                 alamat: addresses[i].value,
-                ktp_path: "dummy/path", // Backend simplified this for now
-                surat_sehat_path: "dummy/path"
+                ktp_path: "placeholder",
+                surat_sehat_path: "placeholder"
             });
         }
 
@@ -312,7 +299,7 @@
             jalur_id: jalurId,
             tanggal_naik: document.getElementById('tanggal_naik').value,
             tanggal_turun: document.getElementById('tanggal_turun').value,
-            members: participants
+            members: members
         };
 
         btn.disabled = true;
@@ -320,14 +307,14 @@
 
         try {
             const data = await window.bookingService.createBooking(payload);
-            window.showAlert('Booking berhasil dibuat! Mengalihkan ke pembayaran...', 'success');
+            window.showAlert('Booking berhasil! Mengalihkan ke pembayaran...', 'success');
             
             setTimeout(() => {
-                window.location.href = `/payment/${data.data.id}`;
+                window.location.href = `/payment/${data.data.id || data.id}`;
             }, 1500);
         } catch (error) {
             console.error(error);
-            const message = error.message || 'Gagal membuat booking. Cek kembali kuota atau data Anda.';
+            const message = error.message || 'Gagal membuat pesanan. Cek kembali data atau kuota jalur.';
             window.showAlert(message, 'danger');
         } finally {
             btn.disabled = false;
