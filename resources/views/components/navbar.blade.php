@@ -56,7 +56,8 @@
                                         <hr class="my-1 border-neutral-light">
                                     </div>
                                     <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light">Profil Saya</a>
-                                    <a href="{{ route('booking.index') }}" class="block px-4 py-2 hover:bg-neutral-light">Booking Saya</a>
+                                    <a href="{{ route('profile.show') }}?tab=booking" class="block px-4 py-2 hover:bg-neutral-light">Booking Saya</a>
+                                    <a href="{{ route('profile.show') }}?tab=eticket" class="block px-4 py-2 hover:bg-neutral-light">E-Ticket Aktif</a>
                                     <hr class="my-1 border-neutral-light">
                                     <button onclick="handleLogout()" class="w-full text-left block px-4 py-2 hover:bg-danger/10 text-danger">Keluar</button>
                                 </div>
