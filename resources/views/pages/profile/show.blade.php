@@ -219,8 +219,12 @@
             </div>`;
 
         try {
-            const response = await window.apiClient.get('/booking?status=ticket_issued');
-            const bookings = response.data.data || response.data;
+            const response = await window.apiClient.get('/booking');
+            let allBookings = response.data.data || response.data;
+            if (!Array.isArray(allBookings)) allBookings = [];
+
+            // Filter booking yang sudah lunas/tiket terbit
+            const bookings = allBookings.filter(b => ['ticket_issued', 'verified', 'success', 'completed'].includes(b.status));
 
             if (bookings.length === 0) {
                 container.innerHTML = `
