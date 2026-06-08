@@ -15,7 +15,7 @@
                 <a href="#" class="hover:text-secondary transition-colors duration-250">Tentang Kami</a>
                 
                 <div id="nav-auth-links" class="flex items-center space-x-4 border-l border-white/20 pl-8">
-                    @auth
+                    @if(auth()->check())
                         <!-- Jika Session Laravel Aktif (Prioritas) -->
                         <div id="nav-user-blade" class="flex items-center space-x-4">
                             <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
@@ -61,7 +61,7 @@
                                 </div>
                             </div>
                         </div>
-                    @endauth
+                    @endif
                 </div>
             </div>
 
@@ -78,8 +78,7 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Hanya jalankan logic JS jika Blade @auth tidak aktif
-        @guest
+        @if(!auth()->check())
             const token = localStorage.getItem('auth_token');
             const user = JSON.parse(localStorage.getItem('user'));
             
@@ -97,13 +96,11 @@
             } else {
                 guestNav.classList.remove('hidden');
             }
-        @endguest
+        @endif
     });
 
     async function handleLogout() {
         try {
-            // Panggil API logout untuk membersihkan session di server
-            // Kita gunakan fetch karena mungkin apiClient belum siap di halaman tertentu
             const response = await fetch('/logout', {
                 method: 'POST',
                 headers: {
@@ -115,7 +112,6 @@
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
-            // Apapun hasilnya di server, bersihkan lokal
             localStorage.removeItem('auth_token');
             localStorage.removeItem('user');
             window.location.href = '/login';
