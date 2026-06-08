@@ -22,3 +22,15 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+
+ADMIN_DASHBOARD_README.md
+ADMIN_SETUP_COMPATIBILITY.md
+FRONTEND_BUILD_GUIDE.md
+PROGRESS_ANALYSIS.md
+gemini.md
+MOUNTIX_FINAL_REPORT.md
+UI.md
+
+# 🧪 Development Logs
+logs.*.json
