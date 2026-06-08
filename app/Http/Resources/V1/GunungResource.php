@@ -18,6 +18,7 @@ class GunungResource extends JsonResource
       'deskripsi' => $this->deskripsi,
       'status_buka' => (bool) $this->status_buka,
       'foto_cover' => $this->foto_cover ? (filter_var($this->foto_cover, FILTER_VALIDATE_URL) ? $this->foto_cover : url('storage/' . $this->foto_cover)) : null,
+      'jalurs_count' => $this->whenCounted('jalurs'),
       'jalur' => JalurResource::collection($this->whenLoaded('jalurs')),
     ];
   }

@@ -114,11 +114,15 @@
         `;
         emptyState.classList.add('hidden');
 
+        const statusVal = document.querySelector('input[name="status"]:checked').value;
         const params = {
             nama: document.getElementById('search-input').value,
-            lokasi: document.getElementById('location-filter').value,
-            status_buka: document.querySelector('input[name="status"]:checked').value
+            lokasi: document.getElementById('location-filter').value
         };
+        
+        if (statusVal !== "") {
+            params.status_buka = statusVal;
+        }
 
         try {
             // Kita panggil API /api/v1/gunung yang datanya dari DB Admin

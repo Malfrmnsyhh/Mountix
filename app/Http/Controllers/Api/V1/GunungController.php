@@ -16,7 +16,7 @@ class GunungController extends Controller
    */
   public function index(Request $request)
   {
-    $query = Gunung::query();
+    $query = Gunung::query()->withCount('jalurs');
 
     // Filtering
     if ($request->filled('nama')) {
