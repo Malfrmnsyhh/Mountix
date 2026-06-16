@@ -95,6 +95,12 @@ class AdminGunungController extends Controller
     public function destroy(Gunung $gunung)
     {
         try {
+            // Cek apakah ada booking yang terhubung ke jalur-jalur di gunung ini
+            $hasBookings = \App\Models\Booking::whereIn('jalur_id', $gunung->jalurs()->pluck('id'))->exists();
+            if ($hasBookings) {
+                return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: Terdapat riwayat booking pada jalur gunung ini. Silakan ubah "Status" menjadi Tutup sebagai gantinya.');
+            }
+
             if ($gunung->foto_cover && !filter_var($gunung->foto_cover, FILTER_VALIDATE_URL)) {
                 Storage::disk('public')->delete($gunung->foto_cover);
             }
@@ -102,8 +108,13 @@ class AdminGunungController extends Controller
             $gunung->delete();
 
             return redirect()->route('admin.gunung.index')->with('success', 'Data gunung berhasil dihapus.');
+        } catch (\Illuminate\Database\QueryException $e) {
+            if ($e->getCode() == 23000) {
+                return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: Data ini masih terkait dengan data lain di sistem.');
+            }
+            return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: Terjadi kesalahan pada database.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: ' . $e->getMessage());
+            return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: Terjadi kesalahan sistem.');
         }
     }
 }
