@@ -95,7 +95,6 @@ class AdminGunungController extends Controller
     public function destroy(Gunung $gunung)
     {
         try {
-            // Cek apakah ada booking yang terhubung ke jalur-jalur di gunung ini
             $hasBookings = \App\Models\Booking::whereIn('jalur_id', $gunung->jalurs()->pluck('id'))->exists();
             if ($hasBookings) {
                 return redirect()->route('admin.gunung.index')->with('error', 'Gagal menghapus data gunung: Terdapat riwayat booking pada jalur gunung ini. Silakan ubah "Status" menjadi Tutup sebagai gantinya.');
