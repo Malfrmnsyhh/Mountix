@@ -26,6 +26,13 @@
                 </a>
             </li>
             
+            <li class="pt-2">
+                <a href="{{ route('admin.gunung-populer.index') }}" class="flex items-center p-3 rounded-xl {{ request()->routeIs('admin.gunung-populer.*') ? 'bg-primary text-white' : 'text-neutral-dark hover:bg-neutral-light' }} transition-all group">
+                    <i data-lucide="star" class="w-5 h-5 {{ request()->routeIs('admin.gunung-populer.*') ? 'text-white' : 'text-neutral-dark/60 group-hover:text-primary' }}"></i>
+                    <span class="ml-3">Gunung Populer</span>
+                </a>
+            </li>
+            
             {{-- 
             <li>
                 <a href="{{ route('admin.fasilitas.index') }}" class="flex items-center p-3 rounded-xl {{ request()->routeIs('admin.fasilitas.*') ? 'bg-primary text-white' : 'text-neutral-dark hover:bg-neutral-light' }} transition-all group">

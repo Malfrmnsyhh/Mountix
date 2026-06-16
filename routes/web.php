@@ -64,6 +64,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
     
     Route::resource('gunung', \App\Http\Controllers\Admin\AdminGunungController::class);
+    
+    // Gunung Populer
+    Route::get('gunung-populer', [\App\Http\Controllers\Admin\AdminGunungPopulerController::class, 'index'])->name('gunung-populer.index');
+    Route::post('gunung-populer/{gunung}/toggle', [\App\Http\Controllers\Admin\AdminGunungPopulerController::class, 'toggle'])->name('gunung-populer.toggle');
+    
     Route::resource('jalur', \App\Http\Controllers\Admin\AdminJalurController::class);
     Route::resource('payment-method', \App\Http\Controllers\Admin\AdminPaymentMethodController::class);
     
