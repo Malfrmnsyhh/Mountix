@@ -9,7 +9,12 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $popularMountains = Gunung::with('jalurs')->limit(3)->get();
+        $popularMountains = Gunung::with('jalurs')
+            ->withCount('bookings')
+            ->orderBy('bookings_count', 'desc')
+            ->limit(6)
+            ->get();
+
         return view('pages.home', compact('popularMountains'));
     }
 }

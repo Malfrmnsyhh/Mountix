@@ -11,4 +11,8 @@ class Gunung extends Model
   public function jalurs() {
     return $this->hasMany(Jalur::class);
   }
+
+  public function bookings() {
+    return $this->hasManyThrough(Booking::class, Jalur::class);
+  }
 }

@@ -1,5 +1,8 @@
 import './bootstrap';
 import './auth';
+import './navbar';
+import './hero';
+import './animations';
 import './gunung';
 import './booking';
 import './payment';

@@ -1,65 +1,67 @@
-<footer class="bg-primary text-white pt-12 pb-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
-            <!-- Brand & Description -->
-            <div class="col-span-1 md:col-span-1">
-                <a href="/" class="text-2xl font-bold tracking-tight">
-                    MOUNT<span class="text-secondary">IX</span>
-                </a>
-                <p class="mt-4 text-neutral-light/80 text-sm leading-relaxed">
-                    Platform booking pendakian gunung di Indonesia yang aman, mudah, dan terpercaya. Nikmati petualangan Anda tanpa ribet.
-                </p>
-                <div class="flex space-x-4 mt-6">
-                    <a href="#" class="text-neutral-light hover:text-secondary transition-colors"><i data-lucide="instagram"></i></a>
-                    <a href="#" class="text-neutral-light hover:text-secondary transition-colors"><i data-lucide="facebook"></i></a>
-                    <a href="#" class="text-neutral-light hover:text-secondary transition-colors"><i data-lucide="twitter"></i></a>
-                </div>
-            </div>
-
-            <!-- Quick Links -->
-            <div>
-                <h3 class="text-lg font-semibold mb-6">Navigasi</h3>
-                <ul class="space-y-4 text-sm text-neutral-light/80">
-                    <li><a href="{{ route('home') }}" class="hover:text-secondary transition-colors">Beranda</a></li>
-                    <li><a href="{{ route('gunung.index') }}" class="hover:text-secondary transition-colors">Daftar Gunung</a></li>
-                    <li><a href="#" class="hover:text-secondary transition-colors">Tentang Kami</a></li>
-                    <li><a href="#" class="hover:text-secondary transition-colors">Bantuan</a></li>
-                </ul>
-            </div>
-
-            <!-- Services -->
-            <div>
-                <h3 class="text-lg font-semibold mb-6">Layanan</h3>
-                <ul class="space-y-4 text-sm text-neutral-light/80">
-                    <li><a href="#" class="hover:text-secondary transition-colors">Booking Online</a></li>
-                    <li><a href="#" class="hover:text-secondary transition-colors">Cek Kuota</a></li>
-                    <li><a href="#" class="hover:text-secondary transition-colors">Verifikasi Pembayaran</a></li>
-                    <li><a href="#" class="hover:text-secondary transition-colors">E-Ticket</a></li>
-                </ul>
-            </div>
-
-            <!-- Contact -->
-            <div>
-                <h3 class="text-lg font-semibold mb-6">Kontak Kami</h3>
-                <ul class="space-y-4 text-sm text-neutral-light/80">
-                    <li class="flex items-start space-x-3">
-                        <i data-lucide="map-pin" class="w-5 h-5 text-secondary"></i>
-                        <span>Jl. Pendaki No. 123, Bandung, Jawa Barat</span>
-                    </li>
-                    <li class="flex items-center space-x-3">
-                        <i data-lucide="phone" class="w-5 h-5 text-secondary"></i>
-                        <span>+62 812-3456-7890</span>
-                    </li>
-                    <li class="flex items-center space-x-3">
-                        <i data-lucide="mail" class="w-5 h-5 text-secondary"></i>
-                        <span>support@mountix.com</span>
-                    </li>
-                </ul>
-            </div>
+<footer class="footer">
+  <div class="section-container">
+    <div class="footer-grid">
+      <!-- Brand & Description -->
+      <div class="footer-brand-section">
+        <a href="/" class="logo mb-6">
+          <span class="logo-icon">⛰️</span>
+          <span class="logo-text text-white">MOUNTIX</span>
+        </a>
+        <p class="footer-description">
+          Platform booking pendakian gunung di Indonesia yang aman, mudah, dan terpercaya. 
+          Nikmati petualangan Anda tanpa ribet dengan sistem reservasi digital kami.
+        </p>
+        <div class="footer-socials">
+          <a href="#" class="social-link" aria-label="Instagram">Instagram</a>
+          <a href="#" class="social-link" aria-label="Facebook">Facebook</a>
+          <a href="#" class="social-link" aria-label="Twitter">Twitter</a>
         </div>
+      </div>
 
-        <div class="border-t border-white/10 mt-12 pt-8 text-center text-sm text-neutral-light/60">
-            <p>&copy; {{ date('Y') }} MOUNTIX. All rights reserved.</p>
-        </div>
+      <!-- Quick Links -->
+      <div class="footer-links">
+        <h3 class="footer-heading">Navigasi</h3>
+        <ul class="footer-list">
+          <li><a href="{{ route('home') }}" class="footer-link">Beranda</a></li>
+          <li><a href="{{ route('gunung.index') }}" class="footer-link">Daftar Gunung</a></li>
+          <li><a href="/#about" class="footer-link">Tentang Kami</a></li>
+          <li><a href="#" class="footer-link">Bantuan & FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Services -->
+      <div class="footer-links">
+        <h3 class="footer-heading">Layanan</h3>
+        <ul class="footer-list">
+          <li><a href="#" class="footer-link">Booking Online</a></li>
+          <li><a href="#" class="footer-link">Cek Kuota Jalur</a></li>
+          <li><a href="#" class="footer-link">Verifikasi Manual</a></li>
+          <li><a href="#" class="footer-link">E-Ticket Digital</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div class="footer-contact">
+        <h3 class="footer-heading">Kontak Kami</h3>
+        <ul class="footer-list">
+          <li class="contact-item">
+            <span class="contact-icon">📍</span>
+            <span>Jl. Pendaki No. 123, Bandung, Jawa Barat</span>
+          </li>
+          <li class="contact-item">
+            <span class="contact-icon">📞</span>
+            <span>+62 812-3456-7890</span>
+          </li>
+          <li class="contact-item">
+            <span class="contact-icon">✉️</span>
+            <span>support@mountix.com</span>
+          </li>
+        </ul>
+      </div>
     </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {{ date('Y') }} MOUNTIX. All rights reserved. Dibuat dengan ❤️ untuk pendaki Indonesia.</p>
+    </div>
+  </div>
 </footer>

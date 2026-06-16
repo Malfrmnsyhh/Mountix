@@ -1,123 +1,101 @@
-<nav class="bg-primary text-white shadow-md fixed top-0 w-full z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-            <!-- Logo -->
-            <div class="flex-shrink-0 flex items-center">
-                <a href="{{ route('home') }}" class="text-2xl font-bold tracking-tight">
-                    MOUNT<span class="text-secondary">IX</span>
-                </a>
-            </div>
+<header class="navbar">
+  <!-- Logo Section -->
+  <div class="navbar-brand">
+    <a href="/" class="logo">
+      <span class="logo-icon">⛰️</span>
+      <span class="logo-text">MOUNTIX</span>
+    </a>
+  </div>
 
-            <!-- Desktop Menu -->
-            <div class="hidden md:flex space-x-8 items-center">
-                <a href="{{ route('home') }}" class="hover:text-secondary transition-colors duration-250 {{ request()->routeIs('home') ? 'text-secondary font-bold' : '' }}">Beranda</a>
-                <a href="{{ route('gunung.index') }}" class="hover:text-secondary transition-colors duration-250 {{ request()->routeIs('gunung.*') ? 'text-secondary font-bold' : '' }}">Gunung</a>
-                <a href="{{ route('home') }}#about" class="hover:text-secondary transition-colors duration-250">Tentang Kami</a>
-                
-                <div id="nav-auth-links" class="flex items-center space-x-4 border-l border-white/20 pl-8">
-                    @if(auth()->check())
-                        <div id="nav-user-blade" class="flex items-center space-x-4">
-                            <span class="text-sm font-medium">{{ auth()->user()->name }}</span>
-                            <div class="relative group">
-                                <button class="flex items-center space-x-1 hover:text-secondary transition-colors">
-                                    <i data-lucide="user-circle"></i>
-                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                                </button>
-                                <div class="absolute right-0 w-48 mt-2 py-2 bg-white text-neutral-dark rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                                    @if(auth()->user()->role === 'admin')
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 bg-primary/5 text-primary font-bold hover:bg-primary/10">Admin Panel</a>
-                                        <hr class="my-1 border-neutral-light">
-                                    @endif
-                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light {{ request()->routeIs('profile.show') ? 'bg-neutral-light font-bold' : '' }}">Profil Saya</a>
-                                    <a href="{{ route('profile.show') }}?tab=booking" class="block px-4 py-2 hover:bg-neutral-light {{ request()->routeIs('booking.index') ? 'bg-neutral-light font-bold' : '' }}">Booking Saya</a>
-                                    <a href="{{ route('profile.show') }}?tab=eticket" class="block px-4 py-2 hover:bg-neutral-light">
-                                        E-Ticket Aktif
-                                    </a>
-                                    <hr class="my-1 border-neutral-light">
-                                    <button onclick="handleLogout()" class="w-full text-left block px-4 py-2 hover:bg-danger/10 text-danger font-bold">Keluar Akun</button>
-                                </div>
-                            </div>
-                        </div>
-                    @else
-                        <div id="nav-guest" class="hidden">
-                            <a href="{{ route('login') }}" class="hover:text-secondary transition-colors duration-250">Masuk</a>
-                            <a href="{{ route('register') }}" class="bg-secondary px-4 py-2 rounded-md hover:bg-secondary/90 transition-colors duration-250 ml-4">Daftar</a>
-                        </div>
-                        <div id="nav-user-js" class="hidden flex items-center space-x-4">
-                            <span id="nav-user-name-js" class="text-sm font-medium"></span>
-                            <div class="relative group">
-                                <button class="flex items-center space-x-1 hover:text-secondary transition-colors">
-                                    <i data-lucide="user-circle"></i>
-                                    <i data-lucide="chevron-down" class="w-4 h-4"></i>
-                                </button>
-                                <div class="absolute right-0 w-48 mt-2 py-2 bg-white text-neutral-dark rounded-md shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                                    <div id="nav-admin-link-js" class="hidden">
-                                        <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 bg-primary/5 text-primary font-bold hover:bg-primary/10">Admin Panel</a>
-                                        <hr class="my-1 border-neutral-light">
-                                    </div>
-                                    <a href="{{ route('profile.show') }}" class="block px-4 py-2 hover:bg-neutral-light">Profil Saya</a>
-                                    <a href="{{ route('profile.show') }}?tab=booking" class="block px-4 py-2 hover:bg-neutral-light">Booking Saya</a>
-                                    <a href="{{ route('profile.show') }}?tab=eticket" class="block px-4 py-2 hover:bg-neutral-light">E-Ticket Aktif</a>
-                                    <hr class="my-1 border-neutral-light">
-                                    <button onclick="handleLogout()" class="w-full text-left block px-4 py-2 hover:bg-danger/10 text-danger">Keluar</button>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
+  <!-- Main Navigation (Hidden on mobile) -->
+  <nav class="navbar-menu" id="navbarMenu">
+    <a href="/" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
+    <a href="/gunung" class="nav-link {{ request()->routeIs('gunung.*') ? 'active' : '' }}">Gunung</a>
+    <a href="/#about" class="nav-link">Tentang Kami</a>
+  </nav>
 
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center">
-                <button type="button" class="text-white hover:text-secondary focus:outline-none">
-                    <i data-lucide="menu"></i>
-                </button>
-            </div>
-        </div>
+  <!-- Auth Controls -->
+  <div class="navbar-actions">
+    <!-- GUEST STATE -->
+    <div class="auth-guest" id="authGuest" style="{{ auth()->check() ? 'display: none;' : 'display: flex;' }}">
+      <a href="/login" class="btn btn-secondary">Masuk</a>
+      <a href="/register" class="btn btn-primary">Daftar</a>
     </div>
-</nav>
+
+    <!-- AUTHENTICATED STATE -->
+    <div class="auth-user" id="authUser" style="{{ auth()->check() ? 'display: flex;' : 'display: none;' }}">
+      <a href="/profile?tab=booking" class="nav-link hidden md:flex items-center gap-2">
+        <span>🗓️</span>
+        <span>Booking Saya</span>
+      </a>
+      <div class="dropdown">
+        <button class="btn btn-profile" id="profileBtn">
+          <span class="user-avatar text-white">👤</span>
+          <span class="user-name" id="userName">{{ auth()->user()->name ?? 'User' }}</span>
+          <span class="dropdown-icon">▼</span>
+        </button>
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="/profile" class="dropdown-item">Profil Saya</a>
+          <a href="/profile?tab=booking" class="dropdown-item">Booking Saya</a>
+          <a href="/profile?tab=eticket" class="dropdown-item">E-Ticket Aktif</a>
+          @if(auth()->check() && auth()->user()->role === 'admin')
+            <hr class="dropdown-divider">
+            <a href="/admin" class="dropdown-item font-bold text-primary-main">Admin Panel</a>
+          @endif
+          <hr class="dropdown-divider">
+          <button onclick="handleLogout()" class="dropdown-item danger w-full text-left">Keluar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Toggle -->
+  <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</header>
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        @if(!auth()->check())
-            const token = localStorage.getItem('auth_token');
-            const user = JSON.parse(localStorage.getItem('user'));
-            
-            const guestNav = document.getElementById('nav-guest');
-            const userNavJs = document.getElementById('nav-user-js');
-            const adminLinkJs = document.getElementById('nav-admin-link-js');
-            const userNameJs = document.getElementById('nav-user-name-js');
+  // Detect if user is authenticated via JWT in localStorage
+  document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('auth_token');
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    const authGuest = document.getElementById('authGuest');
+    const authUser = document.getElementById('authUser');
+    const userNameEl = document.getElementById('userName');
 
-            if (token && user) {
-                userNameJs.textContent = user.name;
-                userNavJs.classList.remove('hidden');
-                if (user.role === 'admin') {
-                    adminLinkJs.classList.remove('hidden');
-                }
-            } else {
-                guestNav.classList.remove('hidden');
-            }
-        @endif
-    });
-
-    async function handleLogout() {
-        try {
-            await fetch('/logout', {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-        } catch (error) {
-            console.error('Logout error:', error);
-        } finally {
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user');
-            window.location.href = '/login';
-        }
+    // If we have a token in localStorage but Blade says not authenticated,
+    // we might want to trust the token for UI purposes, but usually Blade is more reliable for SSR.
+    // However, the GEMINI.md instructions emphasize JWT in JavaScript.
+    
+    if (token && user) {
+      if (authGuest) authGuest.style.display = 'none';
+      if (authUser) authUser.style.display = 'flex';
+      if (userNameEl) userNameEl.textContent = user.name;
     }
+  });
+
+  async function handleLogout() {
+    try {
+      await fetch('/logout', {
+        method: 'POST',
+        headers: {
+          'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('user');
+      window.location.href = '/login';
+    }
+  }
 </script>
 @endpush
