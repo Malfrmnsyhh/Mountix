@@ -14,7 +14,7 @@
             <form id="register-form" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-neutral-dark mb-2">Nama Lengkap</label>
+                        <label for="name" class="block text-sm font-semibold text-neutral-dark mb-2">Nama Lengkap</label>
                         <div class="relative">
                             <i data-lucide="user" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
                             <input type="text" id="name" required placeholder="John Doe" 
@@ -22,7 +22,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-neutral-dark mb-2">Nomor Telepon</label>
+                        <label for="phone" class="block text-sm font-semibold text-neutral-dark mb-2">Nomor Telepon</label>
                         <div class="relative">
                             <i data-lucide="phone" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
                             <input type="tel" id="phone" required placeholder="08123456789" 
@@ -32,7 +32,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Alamat Email</label>
+                    <label for="email" class="block text-sm font-semibold text-neutral-dark mb-2">Alamat Email</label>
                     <div class="relative">
                         <i data-lucide="mail" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
                         <input type="email" id="email" required placeholder="name@example.com" 
@@ -42,7 +42,7 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label class="block text-sm font-semibold text-neutral-dark mb-2">Password</label>
+                        <label for="password" class="block text-sm font-semibold text-neutral-dark mb-2">Password</label>
                         <div class="relative">
                             <i data-lucide="lock" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
                             <input type="password" id="password" required placeholder="••••••••" 
@@ -50,7 +50,7 @@
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-neutral-dark mb-2">Konfirmasi Password</label>
+                        <label for="password_confirmation" class="block text-sm font-semibold text-neutral-dark mb-2">Konfirmasi Password</label>
                         <div class="relative">
                             <i data-lucide="shield-check" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
                             <input type="password" id="password_confirmation" required placeholder="••••••••" 

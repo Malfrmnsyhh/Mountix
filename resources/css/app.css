@@ -333,7 +333,7 @@
     flex-direction: column;
     gap: var(--spacing-4);
     margin-top: var(--spacing-4);
-    order: 3;
+    order: 4;
   }
 
   .navbar-menu.show {
@@ -342,26 +342,41 @@
 
   .navbar-toggle {
     display: flex;
+    order: 3;
+    margin-left: 16px;
   }
 
   .navbar-actions {
-    flex-direction: column;
-    width: 100%;
-    gap: var(--spacing-2);
+    flex-direction: row;
+    width: auto;
+    margin-left: auto;
+    order: 2;
   }
 
   .auth-guest {
     display: flex;
-    gap: var(--spacing-2);
-    width: 100%;
+    gap: 8px;
+    width: auto;
   }
 
   .auth-guest .btn {
-    flex: 1;
+    flex: none;
+    padding: 6px 12px;
+    font-size: 12px;
   }
 
   .auth-user {
-    width: 100%;
+    width: auto;
+  }
+
+  .btn-profile .user-name {
+    display: none;
+  }
+  
+  .btn-profile {
+    padding: 4px;
+    border: none;
+    background: transparent;
   }
 }
 
@@ -656,6 +671,10 @@
   letter-spacing: var(--letter-spacing-tight);
 }
 
+.section-title.text-white {
+  color: white;
+}
+
 .section-subtitle {
   font-size: var(--text-lg);
   color: var(--gray-700);
@@ -873,6 +892,11 @@
   .section-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+  
+  .section-header.text-center {
+    align-items: center;
+    text-align: center;
   }
 
   .btn-link {
@@ -1115,48 +1139,67 @@
 
 /* FOOTER */
 .footer {
-  background-color: var(--primary-dark);
+  background-color: #476032;
   color: white;
-  padding-top: var(--spacing-16);
-  padding-bottom: var(--spacing-8);
+  padding-top: 20px;
+  padding-bottom: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: var(--spacing-12);
-  margin-bottom: var(--spacing-16);
+  grid-template-columns: 1.8fr 1fr 1.4fr;
+  gap: 48px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.footer-brand-section .logo {
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 16px;
+  text-decoration: none;
 }
 
 .footer-brand-section .footer-description {
-  color: rgba(255, 255, 255, 0.7);
-  line-height: var(--line-height-relaxed);
-  margin-bottom: var(--spacing-8);
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
+  max-width: 280px;
 }
 
 .footer-socials {
   display: flex;
-  gap: var(--spacing-4);
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .social-link {
-  color: white;
+  color: rgba(255,255,255,0.75);
   text-decoration: none;
-  font-size: var(--text-sm);
-  padding: var(--spacing-2) var(--spacing-4);
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-md);
-  transition: background-color 0.2s;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 5px 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 999px;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
 }
 
 .social-link:hover {
   background-color: var(--secondary-main);
+  border-color: var(--secondary-main);
+  color: white;
 }
 
 .footer-heading {
-  font-size: var(--text-xl);
-  font-weight: 700;
-  margin-bottom: var(--spacing-6);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--secondary-main);
+  margin-bottom: 20px;
 }
 
 .footer-list {
@@ -1165,35 +1208,42 @@
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-4);
+  gap: 12px;
 }
 
 .footer-link {
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.55);
   text-decoration: none;
+  font-size: 0.8125rem;
   transition: color 0.2s;
 }
 
 .footer-link:hover {
-  color: var(--secondary-main);
+  color: white;
 }
 
 .contact-item {
   display: flex;
-  gap: var(--spacing-3);
-  color: rgba(255, 255, 255, 0.7);
+  align-items: flex-start;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
 .contact-icon {
-  color: var(--secondary-main);
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  margin-top: 1px;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: var(--spacing-8);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 10px 0;
   text-align: center;
-  color: rgba(255, 255, 255, 0.5);
-  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
 }
 
 /* RESPONSIVE FOR NEW SECTIONS */
@@ -1209,6 +1259,7 @@
 
   .footer-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 32px;
   }
 }
 

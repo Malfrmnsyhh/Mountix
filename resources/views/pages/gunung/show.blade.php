@@ -184,8 +184,8 @@
     }
 
     function bookJalur(jalurId) {
-        // Redirect to booking page with jalur_id
-        window.location.href = `/booking/create?jalur_id=${jalurId}`;
+        // Kirim gunung_id agar halaman booking tidak perlu N+1 API loop
+        window.location.href = `/booking/create?gunung_id=${id}&jalur_id=${jalurId}`;
     }
 </script>
 @endpush

@@ -13,22 +13,22 @@
 
             <form id="login-form" class="space-y-6">
                 <div>
-                    <label class="block text-sm font-semibold text-neutral-dark mb-2">Alamat Email</label>
+                    <label for="email" class="block text-sm font-semibold text-neutral-dark mb-2">Alamat Email</label>
                     <div class="relative">
                         <i data-lucide="mail" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
-                        <input type="email" id="email" required placeholder="name@example.com" 
+                        <input type="email" id="email" name="email" required placeholder="name@example.com" 
                             class="w-full pl-10 pr-4 py-3 bg-neutral-light border border-transparent rounded-xl focus:border-primary focus:bg-white focus:outline-none transition-all">
                     </div>
                 </div>
 
                 <div>
                     <div class="flex justify-between items-center mb-2">
-                        <label class="text-sm font-semibold text-neutral-dark">Password</label>
+                        <label for="password" class="text-sm font-semibold text-neutral-dark">Password</label>
                         <a href="{{ route('password.request') }}" class="text-xs font-bold text-secondary hover:underline">Lupa Password?</a>
                     </div>
                     <div class="relative">
                         <i data-lucide="lock" class="absolute left-3 top-3 w-5 h-5 text-neutral-dark/40"></i>
-                        <input type="password" id="password" required placeholder="••••••••" 
+                        <input type="password" id="password" name="password" required placeholder="••••••••" 
                             class="w-full pl-10 pr-4 py-3 bg-neutral-light border border-transparent rounded-xl focus:border-primary focus:bg-white focus:outline-none transition-all">
                     </div>
                 </div>

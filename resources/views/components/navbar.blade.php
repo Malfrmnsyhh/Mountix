@@ -2,7 +2,6 @@
   <!-- Logo Section -->
   <div class="navbar-brand">
     <a href="/" class="logo">
-      <span class="logo-icon">⛰️</span>
       <span class="logo-text">MOUNTIX</span>
     </a>
   </div>
@@ -11,46 +10,49 @@
   <nav class="navbar-menu" id="navbarMenu">
     <a href="/" class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}">Beranda</a>
     <a href="/gunung" class="nav-link {{ request()->routeIs('gunung.*') ? 'active' : '' }}">Gunung</a>
-    <a href="/#about" class="nav-link">Tentang Kami</a>
+    <a href="{{ route('about') }}" class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}">Tentang Kami</a>
   </nav>
 
-  <!-- Auth Controls -->
-  <div class="navbar-actions">
+  <!-- Auth Controls — tersembunyi hingga JS memutuskan state yang benar -->
+  {{-- Fix CLS: sembunyikan dulu, JS akan tampilkan setelah cek auth --}}
+  <div class="navbar-actions invisible opacity-0 transition-opacity duration-150" id="navbarActions">
     <!-- GUEST STATE -->
-    <div class="auth-guest" id="authGuest" style="{{ auth()->check() ? 'display: none;' : 'display: flex;' }}">
+    <div class="auth-guest" id="authGuest" style="display: none; gap: 12px;">
       <a href="/login" class="btn btn-secondary">Masuk</a>
       <a href="/register" class="btn btn-primary">Daftar</a>
     </div>
 
     <!-- AUTHENTICATED STATE -->
-    <div class="auth-user" id="authUser" style="{{ auth()->check() ? 'display: flex;' : 'display: none;' }}">
-      <a href="/profile?tab=booking" class="nav-link hidden md:flex items-center gap-2">
-        <span>🗓️</span>
-        <span>Booking Saya</span>
-      </a>
+    <div class="auth-user" id="authUser" style="display: none;">
       <div class="dropdown">
-        <button class="btn btn-profile" id="profileBtn">
+        <button class="btn btn-profile" id="profileBtn"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-controls="dropdownMenu">
           <span class="user-avatar text-white">👤</span>
           <span class="user-name" id="userName">{{ auth()->user()->name ?? 'User' }}</span>
           <span class="dropdown-icon">▼</span>
         </button>
-        <div class="dropdown-menu" id="dropdownMenu">
-          <a href="/profile" class="dropdown-item">Profil Saya</a>
-          <a href="/profile?tab=booking" class="dropdown-item">Booking Saya</a>
-          <a href="/profile?tab=eticket" class="dropdown-item">E-Ticket Aktif</a>
+        <div class="dropdown-menu" id="dropdownMenu" role="menu">
+          <a href="/profile" class="dropdown-item" role="menuitem">Profil Saya</a>
+          <a href="/profile?tab=booking" class="dropdown-item" role="menuitem">Booking Saya</a>
+          <a href="/profile?tab=eticket" class="dropdown-item" role="menuitem">E-Ticket Aktif</a>
           @if(auth()->check() && auth()->user()->role === 'admin')
             <hr class="dropdown-divider">
-            <a href="/admin" class="dropdown-item font-bold text-primary-main">Admin Panel</a>
+            <a href="/admin" class="dropdown-item font-bold text-primary-main" role="menuitem">Admin Panel</a>
           @endif
           <hr class="dropdown-divider">
-          <button onclick="handleLogout()" class="dropdown-item danger w-full text-left">Keluar</button>
+          <button onclick="handleLogout()" class="dropdown-item danger w-full text-left" role="menuitem">Keluar</button>
         </div>
       </div>
     </div>
   </div>
 
   <!-- Mobile Menu Toggle -->
-  <button class="navbar-toggle" id="navbarToggle" aria-label="Toggle menu">
+  <button class="navbar-toggle" id="navbarToggle"
+    aria-label="Toggle menu"
+    aria-expanded="false"
+    aria-controls="navbarMenu">
     <span></span>
     <span></span>
     <span></span>
@@ -59,23 +61,29 @@
 
 @push('scripts')
 <script>
-  // Detect if user is authenticated via JWT in localStorage
   document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('auth_token');
-    const user = JSON.parse(localStorage.getItem('user'));
-    
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    const navbarActions = document.getElementById('navbarActions');
     const authGuest = document.getElementById('authGuest');
     const authUser = document.getElementById('authUser');
     const userNameEl = document.getElementById('userName');
 
-    // If we have a token in localStorage but Blade says not authenticated,
-    // we might want to trust the token for UI purposes, but usually Blade is more reliable for SSR.
-    // However, the GEMINI.md instructions emphasize JWT in JavaScript.
-    
     if (token && user) {
+      // User memiliki JWT token yang valid di localStorage → tampilkan state user
       if (authGuest) authGuest.style.display = 'none';
       if (authUser) authUser.style.display = 'flex';
       if (userNameEl) userNameEl.textContent = user.name;
+    } else {
+      // Tidak ada token → tampilkan state guest
+      if (authGuest) authGuest.style.display = 'flex';
+      if (authUser) authUser.style.display = 'none';
+    }
+
+    // Setelah state ditentukan, hapus invisible agar tidak ada CLS flicker
+    if (navbarActions) {
+      navbarActions.classList.remove('invisible', 'opacity-0');
     }
   });
 
@@ -99,3 +107,4 @@
   }
 </script>
 @endpush
+

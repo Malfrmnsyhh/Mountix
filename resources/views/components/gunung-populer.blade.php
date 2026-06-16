@@ -7,13 +7,9 @@
       <div>
         <h2 class="section-title">Gunung Populer</h2>
         <p class="section-subtitle">
-          Destinasi favorit para pendaki bulan ini. Pilih rute terbaik untuk petualangan Anda.
+          Destinasi favorit para pendaki. Pilih rute terbaik untuk petualangan Anda.
         </p>
       </div>
-      <a href="/gunung" class="btn btn-link">
-        Lihat Semua
-        <span>→</span>
-      </a>
     </div>
 
     <!-- Mountains Grid -->

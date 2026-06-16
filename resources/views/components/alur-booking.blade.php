@@ -16,7 +16,7 @@
           <span class="step-icon">🏔️</span>
         </div>
         <h3 class="step-title">Pilih Gunung</h3>
-        <p class="step-desc">Cari dan pilih gunung serta jalur pendakian favoritmu.</p>
+        <p class="step-desc">Cari dan pilih gunung serta jalur pendakian Keinginanmu.</p>
         <div class="step-connector"></div>
       </div>
 

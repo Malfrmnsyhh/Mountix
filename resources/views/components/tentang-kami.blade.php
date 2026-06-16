@@ -16,7 +16,6 @@
 
       <!-- Content Side -->
       <div class="about-content reveal delay-2">
-        <span class="badge badge-secondary mb-4">Tentang Kami</span>
         <h2 class="section-title mb-6">Dedikasi Kami untuk Para <span class="text-primary-main">Petualang Indonesia</span></h2>
         
         <p class="section-description mb-8">

@@ -22,36 +22,15 @@
 
       <!-- Description -->
       <p class="hero-description">
-        Temukan jalur terbaik dari 50+ destinasi pendakian dan kelola booking Anda 
+        Temukan jalur terbaik dari seluruh gunung yang ada di Pulau Jawa dan kelola booking Anda 
         dalam genggaman. Tanpa antri, tanpa ribet, cukup melalui ponsel Anda.
       </p>
 
       <!-- CTA Buttons -->
       <div class="hero-actions">
         <a href="/gunung" class="btn btn-primary btn-lg">
-          <span>🏔️</span>
-          <span>Temukan Gunung Pilihan</span>
+          Temukan Gunung Pilihan
         </a>
-        <button class="btn btn-secondary btn-lg" id="videoDemo">
-          <span>▶️</span>
-          <span>Tonton Demo (2 menit)</span>
-        </button>
-      </div>
-
-      <!-- Trust Badges -->
-      <div class="hero-trust">
-        <div class="trust-item">
-          <span class="trust-icon">✓</span>
-          <span>2,500+ pendaki telah mempercayai Mountix</span>
-        </div>
-        <div class="trust-item">
-          <span class="trust-icon">✓</span>
-          <span>Garansi uang kembali 100%</span>
-        </div>
-        <div class="trust-item">
-          <span class="trust-icon">✓</span>
-          <span>Dukungan 24/7 siap membantu</span>
-        </div>
       </div>
     </div>
   </div>

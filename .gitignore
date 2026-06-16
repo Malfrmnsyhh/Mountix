@@ -31,5 +31,7 @@ gemini.md
 MOUNTIX_FINAL_REPORT.md
 UI.md
 
+docs/refactor/*
+
 # 🧪 Development Logs
 logs.*.json

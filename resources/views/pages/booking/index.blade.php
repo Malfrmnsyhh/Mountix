@@ -42,20 +42,33 @@
                                 
                                 <!-- Status Badge -->
                                 @php
+                                    // Fix: sesuaikan dengan status enum backend yang resmi
                                     $statusClasses = [
-                                        'pending' => 'bg-warning/10 text-warning border-warning/20',
-                                        'unpaid' => 'bg-warning/10 text-warning border-warning/20',
-                                        'paid' => 'bg-success/10 text-success border-success/20',
-                                        'success' => 'bg-success/10 text-success border-success/20',
-                                        'failed' => 'bg-danger/10 text-danger border-danger/20',
-                                        'expired' => 'bg-danger/10 text-danger border-danger/20',
-                                        'cancelled' => 'bg-neutral-dark/10 text-neutral-dark border-neutral-dark/20',
+                                        'draft'                => 'bg-neutral-dark/10 text-neutral-dark border-neutral-dark/20',
+                                        'pending_upload'       => 'bg-warning/10 text-warning border-warning/20',
+                                        'waiting_verification' => 'bg-primary/10 text-primary border-primary/20',
+                                        'verified'             => 'bg-success/10 text-success border-success/20',
+                                        'ticket_issued'        => 'bg-success/10 text-success border-success/20',
+                                        'rejected'             => 'bg-danger/10 text-danger border-danger/20',
+                                        'cancelled'            => 'bg-neutral-dark/10 text-neutral-dark border-neutral-dark/20',
+                                        'completed'            => 'bg-success text-white border-success',
+                                    ];
+                                    $statusLabels = [
+                                        'draft'                => 'Draft',
+                                        'pending_upload'       => 'Menunggu Bukti Bayar',
+                                        'waiting_verification' => 'Menunggu Verifikasi',
+                                        'verified'             => 'Diverifikasi',
+                                        'ticket_issued'        => 'Tiket Terbit',
+                                        'rejected'             => 'Ditolak',
+                                        'cancelled'            => 'Dibatalkan',
+                                        'completed'            => 'Selesai',
                                     ];
                                     $currentStatus = $booking->status;
                                     $class = $statusClasses[$currentStatus] ?? 'bg-neutral-light text-neutral-dark border-neutral-dark/10';
+                                    $label = $statusLabels[$currentStatus] ?? ucfirst(str_replace('_', ' ', $currentStatus));
                                 @endphp
                                 <span class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border {{ $class }}">
-                                    {{ $currentStatus }}
+                                    {{ $label }}
                                 </span>
                             </div>
 
@@ -96,16 +109,20 @@
 
                         <!-- Right: Actions -->
                         <div class="p-8 md:w-1/3 bg-neutral-light/20 flex flex-col justify-center items-center gap-4">
-                            @if($booking->status === 'unpaid' || $booking->status === 'pending')
+                            @if(in_array($booking->status, ['draft', 'pending_upload']))
                                 <a href="{{ route('payment.create', $booking->id) }}" class="w-full bg-secondary text-white py-3 rounded-2xl text-center font-bold hover:bg-secondary/90 transition-all shadow-md">
                                     Bayar Sekarang
                                 </a>
-                            @elseif($booking->status === 'paid' || $booking->status === 'success')
+                            @elseif(in_array($booking->status, ['waiting_verification']))
+                                <div class="w-full bg-primary/10 text-primary py-3 rounded-2xl text-center font-bold text-sm">
+                                    ⏳ Menunggu Verifikasi
+                                </div>
+                            @elseif(in_array($booking->status, ['verified', 'ticket_issued', 'completed']))
                                 <a href="{{ route('eticket.show', $booking->id) }}" class="w-full bg-primary text-white py-3 rounded-2xl text-center font-bold hover:bg-primary/90 transition-all shadow-md">
                                     Lihat E-Ticket
                                 </a>
                             @endif
-                            
+
                             <a href="{{ route('booking.show', $booking->id) }}" class="w-full bg-white text-neutral-dark border border-neutral-light py-3 rounded-2xl text-center font-bold hover:bg-neutral-light transition-all">
                                 Detail Booking
                             </a>

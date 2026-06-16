@@ -12,6 +12,7 @@ use App\Http\Controllers\ETicketController;
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/gunung', [GunungController::class, 'index'])->name('gunung.index');
 Route::get('/gunung/{id}', [GunungController::class, 'show'])->name('gunung.show');
+Route::get('/tentang-kami', fn() => view('pages.about'))->name('about');
 
 // Auth Routes (Guest)
 Route::middleware('guest')->group(function () {

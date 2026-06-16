@@ -103,6 +103,7 @@
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const jalurId = urlParams.get('jalur_id');
+    const gunungId = urlParams.get('gunung_id'); // Fix N+1: ambil gunung_id dari URL
     let pricePerPerson = 0;
     let participantCount = 0;
 
@@ -136,38 +137,56 @@
         document.getElementById('tanggal_turun').min = today;
 
         document.getElementById('tanggal_naik').addEventListener('change', function() {
-            document.getElementById('tanggal_turun').min = this.value;
+            const tanggalTurun = document.getElementById('tanggal_turun');
+            tanggalTurun.min = this.value;
+            // Fix: reset tanggal turun jika lebih kecil dari tanggal naik
+            if (tanggalTurun.value && tanggalTurun.value < this.value) {
+                tanggalTurun.value = '';
+                window.showAlert('Tanggal turun telah direset karena lebih awal dari tanggal naik.', 'danger');
+            }
         });
 
         document.getElementById('booking-form').addEventListener('submit', handleBookingSubmit);
     });
 
+    /**
+     * PERBAIKAN N+1: Gunakan gunung_id dari URL untuk memanggil 1 endpoint saja.
+     * Jika gunung_id tidak ada (akses langsung), fallback ke loop lama.
+     */
     async function fetchJalurInfo() {
         try {
-            // Kita panggil API /gunung yang ber-paginasi (data dibungkus 'data')
-            const response = await window.apiClient.get('/gunung');
-            const mountains = response.data.data || response.data;
-            
             let foundJalur = null;
             let foundGunung = null;
 
-            for (const mountain of (Array.isArray(mountains) ? mountains : [])) {
-                const detailResp = await window.apiClient.get(`/gunung/${mountain.id}`);
+            if (gunungId) {
+                // Jalur optimal: 1 request saja
+                const detailResp = await window.apiClient.get(`/gunung/${gunungId}`);
                 const mountainData = detailResp.data.data || detailResp.data;
                 const jalurs = mountainData.jalur || [];
-                
-                const target = jalurs.find(j => j.id == jalurId);
-                if (target) {
-                    foundJalur = target;
-                    foundGunung = mountainData;
-                    break;
+                foundJalur = jalurs.find(j => j.id == jalurId);
+                if (foundJalur) foundGunung = mountainData;
+            } else {
+                // Fallback: loop semua gunung (N+1 — dipertahankan untuk backward compat)
+                const response = await window.apiClient.get('/gunung');
+                const mountains = response.data.data || response.data;
+
+                for (const mountain of (Array.isArray(mountains) ? mountains : [])) {
+                    const detailResp = await window.apiClient.get(`/gunung/${mountain.id}`);
+                    const mountainData = detailResp.data.data || detailResp.data;
+                    const jalurs = mountainData.jalur || [];
+                    const target = jalurs.find(j => j.id == jalurId);
+                    if (target) {
+                        foundJalur = target;
+                        foundGunung = mountainData;
+                        break;
+                    }
                 }
             }
 
             if (foundJalur && foundGunung) {
                 pricePerPerson = foundJalur.harga_per_orang;
                 updateSummary();
-                
+
                 document.getElementById('jalur-summary').innerHTML = `
                     <div class="flex items-start space-x-4">
                         <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-neutral-light">
@@ -189,6 +208,9 @@
                     </div>
                 `;
                 lucide.createIcons();
+            } else {
+                window.showAlert('Informasi jalur tidak ditemukan. Kembali ke halaman gunung.', 'danger');
+                setTimeout(() => { window.location.href = '/gunung'; }, 2000);
             }
         } catch (error) {
             console.error("Error in fetchJalurInfo:", error);
@@ -206,9 +228,9 @@
         card.innerHTML = `
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-2">
-                    <span class="bg-primary text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                    <span class="participant-badge bg-primary text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">
                         Peserta #${participantCount}
-                    </span>
+                    </span>`
                     ${isLeader ? '<span class="text-[10px] text-secondary font-black uppercase tracking-widest">Ketua Rombongan</span>' : ''}
                 </div>
                 ${!isLeader ? `
@@ -259,8 +281,18 @@
         const card = document.getElementById(`participant-container-${id}`);
         if (card) {
             card.remove();
+            // Fix: hitung ulang nomor peserta setelah penghapusan
+            recalculateParticipantNumbers();
             updateSummary();
         }
+    }
+
+    function recalculateParticipantNumbers() {
+        const cards = document.querySelectorAll('.participant-card');
+        cards.forEach((card, index) => {
+            const badge = card.querySelector('.participant-badge');
+            if (badge) badge.textContent = `Peserta #${index + 1}`;
+        });
     }
 
     function updateSummary() {

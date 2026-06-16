@@ -2,22 +2,24 @@
 
 @php
     $price = $gunung->jalurs->min('harga_per_orang') ?? 0;
+    $statusBuka = $gunung->status_buka;
+    $isOpen = $statusBuka === 1
+           || $statusBuka === true
+           || strtolower((string) $statusBuka) === 'buka';
+
+    $statusClass = $isOpen ? 'tersedia' : 'soldout';
+    $statusText  = $isOpen ? 'Buka' : 'Tutup';
     
-    // Determine status badge based on status_buka and mock kuota logic for visual consistency
-    $statusClass = strtolower($gunung->status_buka) === 'buka' ? 'tersedia' : 'soldout';
-    $statusText = strtolower($gunung->status_buka) === 'buka' ? '✓ Tersedia' : '✗ Tutup';
-    
-    // For demo/visual purposes, if price is high, mark as limited
-    if ($price > 100000 && strtolower($gunung->status_buka) === 'buka') {
+    // Terbatas jika harga tinggi tapi masih buka
+    if ($isOpen && $price > 100000) {
         $statusClass = 'limited';
-        $statusText = '⚠️ Terbatas';
+        $statusText  = 'Terbatas';
     }
 
     $image = (filter_var($gunung->foto_cover, FILTER_VALIDATE_URL) 
         ? $gunung->foto_cover 
         : ($gunung->foto_cover ? asset('storage/' . $gunung->foto_cover) : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800'));
     
-    // Mock rating for visual consistency as specified in docs
     $rating = 4.5; 
     $totalReviews = 125;
 @endphp
@@ -45,7 +47,6 @@
     <div class="card-header">
       <h3 class="card-title">{{ $gunung->nama }}</h3>
       <div class="card-rating">
-        <span class="stars">★★★★☆</span>
         <span class="rating-value">{{ number_format($rating, 1) }}</span>
       </div>
     </div>
@@ -65,10 +66,7 @@
     <!-- CTA Buttons -->
     <div class="card-actions">
       <a href="/gunung/{{ $gunung->id }}" class="btn btn-secondary btn-sm">
-        🗓️ Lihat Ketersediaan
-      </a>
-      <a href="/gunung/{{ $gunung->id }}" class="btn btn-link btn-sm">
-        Detail Gunung →
+        Lihat Ketersediaan
       </a>
     </div>
   </div>

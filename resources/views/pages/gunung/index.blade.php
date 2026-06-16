@@ -3,10 +3,10 @@
 @section('title', 'Daftar Gunung - Mountix')
 
 @section('content')
-<!-- Header Sederhana & Elegan -->
-<div class="bg-primary pt-28 pb-12">
+
+<div class="bg-primary pt-16 pb-8">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
-        <h1 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight">Eksplorasi Gunung Indonesia</h1>
+        <h1 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight">Jelajahi Keindahan Gunung di Pulau Jawa</h1>
         <p class="text-neutral-light/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
             Temukan jalur pendakian terbaik dan rencanakan petualangan Anda dengan mudah.
         </p>
@@ -36,7 +36,6 @@
                             <option value="Jawa Barat">Jawa Barat</option>
                             <option value="Jawa Tengah">Jawa Tengah</option>
                             <option value="Jawa Timur">Jawa Timur</option>
-                            <option value="Luar Jawa">Luar Jawa</option>
                         </select>
                     </div>
 

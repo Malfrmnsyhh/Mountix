@@ -27,6 +27,24 @@ apiClient.interceptors.response.use(
       if (!window.location.pathname.includes('/login')) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user');
+
+        // Fix: bersihkan session cookie server-side agar tidak terjadi
+        // auth desynchronization loop antara JWT (localStorage) dan Blade session.
+        try {
+          const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+          await fetch('/logout', {
+            method: 'POST',
+            headers: {
+              'X-CSRF-TOKEN': csrfToken,
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (e) {
+          // Abaikan error logout, tetap alihkan ke login
+          console.warn('Gagal sinkronisasi server logout:', e);
+        }
+
         window.location.href = '/login';
       }
     }
