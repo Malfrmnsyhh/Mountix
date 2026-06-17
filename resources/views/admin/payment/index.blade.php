@@ -5,7 +5,7 @@
 @section('content')
 <div class="mb-8">
     <h1 class="text-3xl font-black text-neutral-dark">Monitor Pembayaran</h1>
-    <p class="text-neutral-dark/60">Verifikasi bukti bayar dan pantau arus kas pendakian.</p>
+    <p class="text-neutral-dark/60">Verifikasi bukti bayar.</p>
 </div>
 
 <div class="bg-white rounded-3xl border border-neutral-light shadow-sm overflow-hidden">

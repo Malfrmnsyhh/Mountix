@@ -8,7 +8,7 @@
     <p class="text-neutral-dark/60 font-medium">Memuat data pembayaran...</p>
 </div>
 
-<div class="bg-primary pt-32 pb-20">
+<div class="bg-primary pt-10 pb-10">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
         <h1 class="text-4xl font-bold mb-4">Pembayaran</h1>
         <p class="text-neutral-light/70 max-w-2xl mx-auto">Selesaikan pembayaran Anda untuk mendapatkan e-ticket pendakian.</p>

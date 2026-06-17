@@ -7,7 +7,7 @@
       <div>
         <h2 class="section-title">Gunung Populer</h2>
         <p class="section-subtitle">
-          Destinasi favorit para pendaki. Pilih rute terbaik untuk petualangan Anda.
+          Destinasi favorit para pendaki. Pilih rute terbaik untuk petualanganmu.
         </p>
       </div>
     </div>

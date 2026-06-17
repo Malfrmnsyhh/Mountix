@@ -31,12 +31,12 @@
           aria-controls="dropdownMenu">
           <span class="user-avatar text-white">👤</span>
           <span class="user-name" id="userName">{{ auth()->user()->name ?? 'User' }}</span>
-          <span class="dropdown-icon">▼</span>
+          <span class="dropdown-icon"><i data-lucide="chevron-down"></i></span>
         </button>
         <div class="dropdown-menu" id="dropdownMenu" role="menu">
           <a href="/profile" class="dropdown-item" role="menuitem">Profil Saya</a>
-          <a href="/profile?tab=booking" class="dropdown-item" role="menuitem">Booking Saya</a>
-          <a href="/profile?tab=eticket" class="dropdown-item" role="menuitem">E-Ticket Aktif</a>
+          <a href="/booking" class="dropdown-item" role="menuitem">Booking Saya</a>
+          <a href="/eticket" class="dropdown-item" role="menuitem">E-Ticket Aktif</a>
           @if(auth()->check() && auth()->user()->role === 'admin')
             <hr class="dropdown-divider">
             <a href="/admin" class="dropdown-item font-bold text-primary-main" role="menuitem">Admin Panel</a>

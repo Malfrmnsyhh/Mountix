@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/payment/{booking_id}', [PaymentController::class, 'create'])->name('payment.create');
     Route::get('/payment/{booking_id}/success', [PaymentController::class, 'success'])->name('payment.success');
 
+    Route::get('/eticket', [ETicketController::class, 'index'])->name('eticket.index');
     Route::get('/eticket/{booking_id}', [ETicketController::class, 'show'])->name('eticket.show');
 });
 

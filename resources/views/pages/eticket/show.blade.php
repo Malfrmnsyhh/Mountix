@@ -8,7 +8,7 @@
     <p class="text-neutral-dark/60 font-black uppercase tracking-widest text-xs">Menyiapkan E-Ticket...</p>
 </div>
 
-<div class="bg-primary pt-28 pb-12 print:hidden">
+<div class="bg-primary pt-10 pb-12 print:hidden">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
         <h1 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight">E-Ticket Pendakian</h1>
         <p class="text-neutral-light/60 text-sm md:text-base max-w-xl mx-auto leading-relaxed italic">Wajib dibawa dan ditunjukkan saat registrasi ulang di basecamp.</p>
@@ -24,8 +24,8 @@
         <button onclick="window.print()" class="flex items-center px-8 py-4 bg-white text-primary border-2 border-primary font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-neutral-light transition-all shadow-xl">
             <i data-lucide="printer" class="w-5 h-5 mr-3"></i> Cetak Tiket (PDF)
         </button>
-        <a href="{{ route('profile.show') }}?tab=booking" class="flex items-center px-8 py-4 bg-primary text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-secondary transition-all shadow-xl">
-            <i data-lucide="arrow-left" class="w-5 h-5 mr-3"></i> Kembali ke Profil
+        <a href="{{ route('eticket.index') }}" class="flex items-center px-8 py-4 bg-primary text-white font-black uppercase tracking-widest text-xs rounded-2xl hover:bg-secondary transition-all shadow-xl">
+            <i data-lucide="arrow-left" class="w-5 h-5 mr-3"></i> Kembali ke E-Ticket
         </a>
     </div>
 </section>

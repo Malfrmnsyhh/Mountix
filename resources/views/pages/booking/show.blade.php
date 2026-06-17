@@ -3,7 +3,7 @@
 @section('title', 'Detail Booking - Mountix')
 
 @section('content')
-<div class="bg-primary pt-32 pb-20">
+<div class="bg-primary pt-10 pb-10">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
         <h1 class="text-4xl font-bold mb-4">Detail Booking</h1>
         <p class="text-neutral-light/70 uppercase tracking-widest text-sm font-black">{{ $booking->kode_booking }}</p>

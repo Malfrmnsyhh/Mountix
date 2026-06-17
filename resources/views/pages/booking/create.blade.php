@@ -8,7 +8,7 @@
     <p class="text-neutral-dark/60 font-medium">Menyiapkan formulir booking...</p>
 </div>
 
-<div class="bg-primary pt-32 pb-20">
+<div class="bg-primary pt-20 pb-20">
     <div class="max-w-7xl mx-auto px-4 text-center text-white">
         <h1 class="text-4xl font-bold mb-4">Pesan Pendakian</h1>
         <p class="text-neutral-light/70 max-w-2xl mx-auto">Lengkapi formulir di bawah untuk mendaftarkan pendakian Anda.</p>
@@ -122,10 +122,10 @@
 
         try {
             await fetchJalurInfo();
-            // PENTING: Panggil addParticipant setelah Jalur Info berhasil dimuat atau gagal tapi tetap lanjut
         } catch (e) {
             console.error(e);
         } finally {
+            // Pastikan peserta pertama selalu ada dan overlay selalu hilang
             if (participantCount === 0) {
                 addParticipant(true);
             }
@@ -139,10 +139,9 @@
         document.getElementById('tanggal_naik').addEventListener('change', function() {
             const tanggalTurun = document.getElementById('tanggal_turun');
             tanggalTurun.min = this.value;
-            // Fix: reset tanggal turun jika lebih kecil dari tanggal naik
             if (tanggalTurun.value && tanggalTurun.value < this.value) {
                 tanggalTurun.value = '';
-                window.showAlert('Tanggal turun telah direset karena lebih awal dari tanggal naik.', 'danger');
+                window.showAlert('Tanggal turun direset karena lebih awal dari tanggal naik.', 'danger');
             }
         });
 
@@ -150,8 +149,8 @@
     });
 
     /**
-     * PERBAIKAN N+1: Gunakan gunung_id dari URL untuk memanggil 1 endpoint saja.
-     * Jika gunung_id tidak ada (akses langsung), fallback ke loop lama.
+     * FIX #2: Gunakan gunung_id dari URL → 1 request saja.
+     * Fallback ke loop hanya jika gunung_id benar-benar tidak ada.
      */
     async function fetchJalurInfo() {
         try {
@@ -159,22 +158,23 @@
             let foundGunung = null;
 
             if (gunungId) {
-                // Jalur optimal: 1 request saja
+                // Optimal path: 1 request
                 const detailResp = await window.apiClient.get(`/gunung/${gunungId}`);
                 const mountainData = detailResp.data.data || detailResp.data;
                 const jalurs = mountainData.jalur || [];
-                foundJalur = jalurs.find(j => j.id == jalurId);
+                foundJalur = jalurs.find(j => String(j.id) === String(jalurId));
                 if (foundJalur) foundGunung = mountainData;
             } else {
-                // Fallback: loop semua gunung (N+1 — dipertahankan untuk backward compat)
+                // Fallback: loop semua gunung (N+1 — hanya jika gunung_id tidak ada)
                 const response = await window.apiClient.get('/gunung');
                 const mountains = response.data.data || response.data;
+                const list = Array.isArray(mountains) ? mountains : (mountains.data || []);
 
-                for (const mountain of (Array.isArray(mountains) ? mountains : [])) {
+                for (const mountain of list) {
                     const detailResp = await window.apiClient.get(`/gunung/${mountain.id}`);
                     const mountainData = detailResp.data.data || detailResp.data;
                     const jalurs = mountainData.jalur || [];
-                    const target = jalurs.find(j => j.id == jalurId);
+                    const target = jalurs.find(j => String(j.id) === String(jalurId));
                     if (target) {
                         foundJalur = target;
                         foundGunung = mountainData;
@@ -190,7 +190,7 @@
                 document.getElementById('jalur-summary').innerHTML = `
                     <div class="flex items-start space-x-4">
                         <div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0 bg-neutral-light">
-                            <img src="${foundGunung.foto_cover ? foundGunung.foto_cover : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200'}" class="w-full h-full object-cover">
+                            <img src="${foundGunung.foto_cover ? foundGunung.foto_cover : 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=200'}" class="w-full h-full object-cover" alt="Foto gunung">
                         </div>
                         <div>
                             <span class="text-[10px] text-secondary font-black uppercase tracking-widest">${foundGunung.nama}</span>
@@ -209,56 +209,78 @@
                 `;
                 lucide.createIcons();
             } else {
-                window.showAlert('Informasi jalur tidak ditemukan. Kembali ke halaman gunung.', 'danger');
-                setTimeout(() => { window.location.href = '/gunung'; }, 2000);
+                // FIX #6: Tampilkan error di UI, bukan hanya alert, dan jangan biarkan overlay terus tampil
+                document.getElementById('jalur-summary').innerHTML = `
+                    <div class="col-span-2 text-center py-6">
+                        <p class="text-danger font-semibold">Jalur tidak ditemukan. Silakan kembali dan pilih jalur kembali.</p>
+                        <a href="/gunung" class="mt-4 inline-block bg-primary text-white px-6 py-2 rounded-xl text-sm font-bold">Kembali ke Daftar Gunung</a>
+                    </div>
+                `;
+                window.showAlert('Informasi jalur tidak ditemukan.', 'danger');
             }
         } catch (error) {
-            console.error("Error in fetchJalurInfo:", error);
+            console.error('Error in fetchJalurInfo:', error);
             throw error;
         }
     }
 
+    /**
+     * FIX #1 (CRITICAL): Perbaikan syntax error pada template literal.
+     * Sebelumnya backtick di baris innerHTML ditutup prematur di tengah string
+     * (setelah </span> pertama), menyebabkan seluruh JS crash.
+     *
+     * FIX #4: participantCount hanya digunakan sebagai counter monoton naik
+     * untuk ID unik. Nomor tampilan dihitung ulang via recalculateParticipantNumbers().
+     */
     function addParticipant(isLeader = false) {
         participantCount++;
+        const cardId = participantCount;
         const container = document.getElementById('participants-container');
         const card = document.createElement('div');
         card.className = 'participant-card bg-neutral-light/20 p-6 rounded-3xl border border-neutral-light relative overflow-hidden group hover:border-primary/20 transition-all';
-        card.id = `participant-container-${participantCount}`;
-        
+        card.id = `participant-container-${cardId}`;
+
+        // FIX #1: Satu template literal yang konsisten tanpa penutupan backtick prematur
+        const leaderBadge = isLeader
+            ? '<span class="text-[10px] text-secondary font-black uppercase tracking-widest ml-2">Ketua Rombongan</span>'
+            : '';
+        const deleteBtn = !isLeader
+            ? `<button type="button" onclick="removeParticipant(${cardId})" class="text-danger hover:scale-110 transition-transform p-1" title="Hapus peserta">
+                    <i data-lucide="trash-2" class="w-5 h-5"></i>
+               </button>`
+            : '';
+
         card.innerHTML = `
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-2">
                     <span class="participant-badge bg-primary text-white px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">
-                        Peserta #${participantCount}
-                    </span>`
-                    ${isLeader ? '<span class="text-[10px] text-secondary font-black uppercase tracking-widest">Ketua Rombongan</span>' : ''}
+                        Peserta #${cardId}
+                    </span>
+                    ${leaderBadge}
                 </div>
-                ${!isLeader ? `
-                    <button type="button" onclick="removeParticipant(${participantCount})" class="text-danger hover:scale-110 transition-transform p-1">
-                        <i data-lucide="trash-2" class="w-5 h-5"></i>
-                    </button>
-                ` : ''}
+                ${deleteBtn}
             </div>
-            
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Nama Lengkap (Sesuai KTP)</label>
-                    <input type="text" name="nama_lengkap[]" required placeholder="Contoh: John Doe" 
+                    <input type="text" name="nama_lengkap[]" required placeholder="Contoh: Muhammad Akmal"
                         class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
                 </div>
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Nomor NIK</label>
-                    <input type="text" name="nik[]" required maxlength="16" minlength="16" placeholder="16 Digit NIK" 
-                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
+                    <input type="text" name="nik[]" required maxlength="16" minlength="16" placeholder="16 Digit NIK"
+                        class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium"
+                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                 </div>
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Tanggal Lahir</label>
-                    <input type="date" name="tanggal_lahir[]" required 
+                    <input type="date" name="tanggal_lahir[]" required
                         class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium">
                 </div>
                 <div>
                     <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Jenis Kelamin</label>
-                    <select name="jenis_kelamin[]" required 
+                    <select name="jenis_kelamin[]" required
                         class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium appearance-none">
                         <option value="L">Laki-laki</option>
                         <option value="P">Perempuan</option>
@@ -266,12 +288,12 @@
                 </div>
                 <div class="md:col-span-2">
                     <label class="block text-[10px] font-black uppercase tracking-widest text-neutral-dark/40 mb-2">Alamat Lengkap</label>
-                    <textarea name="alamat[]" required rows="2" placeholder="Alamat lengkap domisili saat ini..." 
+                    <textarea name="alamat[]" required rows="2" placeholder="Alamat lengkap domisili saat ini..."
                         class="w-full px-4 py-3 bg-white border border-neutral-light rounded-xl focus:border-primary focus:outline-none transition-all text-sm font-medium resize-none"></textarea>
                 </div>
             </div>
         `;
-        
+
         container.appendChild(card);
         lucide.createIcons();
         updateSummary();
@@ -281,7 +303,6 @@
         const card = document.getElementById(`participant-container-${id}`);
         if (card) {
             card.remove();
-            // Fix: hitung ulang nomor peserta setelah penghapusan
             recalculateParticipantNumbers();
             updateSummary();
         }
@@ -304,34 +325,54 @@
 
     async function handleBookingSubmit(e) {
         e.preventDefault();
-        
+
         const btn = document.getElementById('submit-btn');
         const loader = document.getElementById('loader');
-        
-        const names = document.getElementsByName('nama_lengkap[]');
-        const niks = document.getElementsByName('nik[]');
-        const dobs = document.getElementsByName('tanggal_lahir[]');
-        const genders = document.getElementsByName('jenis_kelamin[]');
+
+        const names     = document.getElementsByName('nama_lengkap[]');
+        const niks      = document.getElementsByName('nik[]');
+        const dobs      = document.getElementsByName('tanggal_lahir[]');
+        const genders   = document.getElementsByName('jenis_kelamin[]');
         const addresses = document.getElementsByName('alamat[]');
+
+        // Validasi: harus ada minimal 1 peserta
+        if (names.length === 0) {
+            window.showAlert('Tambahkan minimal 1 peserta.', 'danger');
+            return;
+        }
 
         const members = [];
         for (let i = 0; i < names.length; i++) {
+            // Validasi NIK harus 16 digit
+            if (niks[i].value.length !== 16) {
+                window.showAlert(`NIK peserta #${i + 1} harus 16 digit.`, 'danger');
+                niks[i].focus();
+                return;
+            }
             members.push({
-                nama_lengkap: names[i].value,
-                nik: niks[i].value,
-                tanggal_lahir: dobs[i].value,
-                jenis_kelamin: genders[i].value,
-                alamat: addresses[i].value,
-                ktp_path: "placeholder",
-                surat_sehat_path: "placeholder"
+                nama_lengkap:      names[i].value.trim(),
+                nik:               niks[i].value.trim(),
+                tanggal_lahir:     dobs[i].value,
+                jenis_kelamin:     genders[i].value,
+                alamat:            addresses[i].value.trim(),
+                ktp_path:          'placeholder',
+                surat_sehat_path:  'placeholder'
             });
         }
 
+        const tanggalNaik  = document.getElementById('tanggal_naik').value;
+        const tanggalTurun = document.getElementById('tanggal_turun').value;
+
+        if (!tanggalNaik || !tanggalTurun) {
+            window.showAlert('Tanggal naik dan turun harus diisi.', 'danger');
+            return;
+        }
+
         const payload = {
-            jalur_id: jalurId,
-            tanggal_naik: document.getElementById('tanggal_naik').value,
-            tanggal_turun: document.getElementById('tanggal_turun').value,
-            members: members
+            jalur_id:      parseInt(jalurId),
+            tanggal_naik:  tanggalNaik,
+            tanggal_turun: tanggalTurun,
+            members:       members
         };
 
         btn.disabled = true;
@@ -340,13 +381,27 @@
         try {
             const data = await window.bookingService.createBooking(payload);
             window.showAlert('Booking berhasil! Mengalihkan ke pembayaran...', 'success');
-            
+
+            // FIX #3: Ekstrak booking ID dari berbagai bentuk response
+            const bookingId = data?.data?.id ?? data?.id ?? null;
+            if (!bookingId) throw new Error('ID booking tidak ditemukan dari response server.');
+
             setTimeout(() => {
-                window.location.href = `/payment/${data.data.id || data.id}`;
+                window.location.href = `/payment/${bookingId}`;
             }, 1500);
         } catch (error) {
             console.error(error);
-            const message = error.message || 'Gagal membuat pesanan. Cek kembali data atau kuota jalur.';
+            // FIX #3: error dari bookingService bisa berupa object {message:...} atau string
+            let message = 'Gagal membuat pesanan. Cek kembali data atau kuota jalur.';
+            if (typeof error === 'string') {
+                message = error;
+            } else if (error?.message) {
+                message = error.message;
+            } else if (error?.errors) {
+                // Laravel validation errors: ambil pesan pertama
+                const firstKey = Object.keys(error.errors)[0];
+                message = error.errors[firstKey][0];
+            }
             window.showAlert(message, 'danger');
         } finally {
             btn.disabled = false;

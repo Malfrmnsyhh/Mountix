@@ -32,7 +32,8 @@ class ETicketService
       $tickets[] = $ticket;
     }
 
-    $booking->update(['status' => 'ticket_issued']);
+    // Langsung completed: tiket sudah di-generate, pembayaran sudah disetujui
+    $booking->update(['status' => 'completed']);
 
     try {
       Mail::to($booking->user->email)->send(new TicketIssuedMail($booking, $tickets));

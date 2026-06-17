@@ -19,7 +19,7 @@
             <div class="md:w-64">
                 <select name="status" class="w-full px-4 py-3 bg-white border border-neutral-light rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all appearance-none">
                     <option value="">Semua Status</option>
-                    @foreach(['draft', 'pending_upload', 'waiting_verification', 'verified', 'ticket_issued', 'completed', 'cancelled', 'rejected'] as $st)
+                    @foreach(['draft', 'pending_upload', 'waiting_verification', 'verified', 'completed', 'cancelled', 'rejected'] as $st)
                         <option value="{{ $st }}" {{ request('status') == $st ? 'selected' : '' }}>{{ strtoupper(str_replace('_', ' ', $st)) }}</option>
                     @endforeach
                 </select>

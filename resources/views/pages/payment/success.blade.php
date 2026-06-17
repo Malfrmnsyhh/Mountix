@@ -27,7 +27,7 @@
             </div>
 
             <p class="mt-8 text-xs text-neutral-dark/40 italic">
-                Pemberitahuan akan dikirimkan melalui email setelah status pembayaran Anda disetujui.
+                Silahkan cek status booking Anda secara berkala untuk memantau proses verifikasi.
             </p>
         </div>
     </div>

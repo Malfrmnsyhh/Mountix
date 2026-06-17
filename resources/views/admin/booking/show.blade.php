@@ -128,7 +128,7 @@
                 <div>
                     <label class="block text-[10px] font-bold text-neutral-dark uppercase tracking-wider mb-2">Pilih Status Baru</label>
                     <select name="status" class="w-full px-4 py-3 bg-neutral-light border border-transparent rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-white outline-none transition-all appearance-none">
-                        @foreach(['draft', 'pending_upload', 'waiting_verification', 'verified', 'ticket_issued', 'completed', 'cancelled', 'rejected'] as $st)
+                        @foreach(['draft', 'pending_upload', 'waiting_verification', 'verified', 'completed', 'cancelled', 'rejected'] as $st)
                             <option value="{{ $st }}" {{ $booking->status == $st ? 'selected' : '' }}>{{ strtoupper(str_replace('_', ' ', $st)) }}</option>
                         @endforeach
                     </select>

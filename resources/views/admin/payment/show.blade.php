@@ -8,7 +8,6 @@
         <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali ke Monitor
     </a>
     <h1 class="text-3xl font-black text-neutral-dark">Verifikasi Transaksi</h1>
-    <p class="text-neutral-dark/60">Periksa bukti transfer dan konfirmasi validitas pembayaran.</p>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">

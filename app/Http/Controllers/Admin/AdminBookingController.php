@@ -38,15 +38,17 @@ class AdminBookingController extends Controller
     public function update(Request $request, Booking $booking)
     {
         $validated = $request->validate([
-            'status' => 'required|in:draft,pending_upload,waiting_verification,verified,ticket_issued,completed,cancelled,rejected',
+            'status' => 'required|in:draft,pending_upload,waiting_verification,verified,completed,cancelled,rejected',
             'catatan_admin' => 'nullable|string',
         ]);
 
         $booking->update($validated);
 
-        // Logic auto generate ticket if status verified -> ticket_issued
-        if ($validated['status'] === 'ticket_issued' && $booking->getOriginal('status') !== 'ticket_issued') {
-            app(ETicketService::class)->generateTicket($booking);
+        // Auto-generate tiket saat admin manual set ke 'completed' (jika belum ada tiket)
+        if ($validated['status'] === 'completed' && $booking->getOriginal('status') !== 'completed') {
+            if ($booking->etickets()->count() === 0) {
+                app(ETicketService::class)->generateTicket($booking->fresh());
+            }
         }
 
         return redirect()->route('admin.booking.show', $booking->id)->with('success', 'Status booking berhasil diperbarui.');

@@ -120,11 +120,17 @@
                     </div>
                     <span class="font-bold text-sm">Tambah Jalur</span>
                 </a>
+                <a href="{{ route('admin.gunung-populer.index') }}" class="flex items-center gap-3 p-4 bg-warning/5 hover:bg-warning/10 text-warning rounded-2xl transition-all group">
+                    <div class="w-10 h-10 rounded-xl bg-warning text-white flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <i data-lucide="star" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-sm">Pengaturan Gunung Populer</span>
+                </a>
             </div>
         </div>
 
         <!-- System Info -->
-        <div class="bg-neutral-dark p-6 rounded-3xl text-white shadow-xl shadow-primary/10">
+        <div class="bg-neutral-dark p-5 rounded-3xl text-white shadow-xl shadow-primary/10">
             <h3 class="font-bold mb-4 flex items-center gap-2">
                 <i data-lucide="info" class="w-5 h-5 text-secondary"></i>
                 System Info
