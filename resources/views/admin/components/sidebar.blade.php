@@ -75,6 +75,13 @@
                     <span class="ml-3">Users</span>
                 </a>
             </li>
+
+            <li>
+                <a href="{{ route('admin.settings.index') }}" class="flex items-center p-3 rounded-xl {{ request()->routeIs('admin.settings.*') ? 'bg-white/10 text-white font-bold border border-white/20' : 'text-white/70 hover:bg-white/5 hover:text-white' }} transition-all group">
+                    <i data-lucide="layout-panel-top" class="w-5 h-5 {{ request()->routeIs('admin.settings.*') ? 'text-white' : 'text-white/50 group-hover:text-white' }}"></i>
+                    <span class="ml-3">Pengaturan Beranda</span>
+                </a>
+            </li>
         </ul>
 
         <div class="mt-10 pt-10 border-t border-white/10">

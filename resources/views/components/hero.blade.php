@@ -1,7 +1,20 @@
 <section class="hero">
   <div class="hero-background">
-    <img 
-      src="{{ asset('storage/gunung/hero/hero-gunung.jpg') }}"
+    @php
+      // 1. Coba ambil dari database
+      $heroPath = \App\Models\SiteSetting::get('hero_image');
+      if ($heroPath) {
+          $heroUrl = asset('storage/' . $heroPath);
+      } elseif (file_exists(public_path('storage/gunung/hero/hero-gunung.jpg'))) {
+          // 2. Fallback ke file lokal jika ada
+          $heroUrl = asset('storage/gunung/hero/hero-gunung.jpg');
+      } else {
+          // 3. Last-resort: gambar default Unsplash
+          $heroUrl = 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80';
+      }
+    @endphp
+    <img
+      src="{{ $heroUrl }}"
       alt="Mountain landscape"
       class="hero-image"
     >

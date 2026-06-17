@@ -78,4 +78,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('payment/{payment}/verify', [\App\Http\Controllers\Admin\AdminPaymentController::class, 'verify'])->name('payment.verify');
     Route::resource('eticket', \App\Http\Controllers\Admin\AdminETicketController::class)->only(['index', 'show']);
     Route::resource('users', \App\Http\Controllers\Admin\AdminUserController::class)->only(['index', 'show']);
+
+    // Site Settings
+    Route::get('settings', [\App\Http\Controllers\Admin\AdminSiteSettingController::class, 'index'])->name('settings.index');
+    Route::put('settings', [\App\Http\Controllers\Admin\AdminSiteSettingController::class, 'update'])->name('settings.update');
 });
